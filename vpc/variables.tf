@@ -1,3 +1,5 @@
+variable "s3_region" {}
+variable "s3_bucket" {}
 variable "environment" {}
 
 variable "region" {
