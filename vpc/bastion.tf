@@ -28,7 +28,7 @@ resource "aws_security_group" "bastion_public" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   tags {
-    Name = "bastion-${var.environment}"
+    Name = "bastion-public-${var.environment}"
     Environment = "${var.environment}"
   }
 }
@@ -49,13 +49,13 @@ resource "aws_security_group" "bastion_private" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   tags {
-    Name = "bastion-${var.environment}"
+    Name = "bastion-private-${var.environment}"
     Environment = "${var.environment}"
   }
 }
 
 resource "aws_route53_record" "bastion" {
-  zone_id = "${aws_route53_zone.subdomain.zone_id}"
+  zone_id = "${aws_route53_zone.public.zone_id}"
   name = "bastion"
   type = "A"
   ttl = "60"

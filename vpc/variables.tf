@@ -45,5 +45,5 @@ variable "domain_hosted_zone_id" {
 }
 
 variable "bastion_ssh_cidr_blocks" {
-  default = "82.132.229.194/32"
+  default = "82.132.213.116/32"
 }

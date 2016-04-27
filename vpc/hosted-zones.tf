@@ -1,4 +1,9 @@
-resource "aws_route53_zone" "subdomain" {
+resource "aws_route53_zone" "private" {
+  name = "${var.environment}.${var.domain}"
+  vpc_id = "${aws_vpc.main.id}"
+}
+
+resource "aws_route53_zone" "public" {
   name = "${var.environment}.${var.domain}"
 }
 
@@ -8,14 +13,9 @@ resource "aws_route53_record" "ns" {
   type = "NS"
   ttl = "30"
   records = [
-    "${aws_route53_zone.subdomain.name_servers.0}",
-    "${aws_route53_zone.subdomain.name_servers.1}",
-    "${aws_route53_zone.subdomain.name_servers.2}",
-    "${aws_route53_zone.subdomain.name_servers.3}"
+    "${aws_route53_zone.public.name_servers.0}",
+    "${aws_route53_zone.public.name_servers.1}",
+    "${aws_route53_zone.public.name_servers.2}",
+    "${aws_route53_zone.public.name_servers.3}"
   ]
-}
-
-resource "aws_route53_zone" "private" {
-  name = "${var.environment}.${var.domain}"
-  vpc_id = "${aws_vpc.main.id}"
 }
