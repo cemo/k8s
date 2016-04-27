@@ -1,7 +1,7 @@
 resource "aws_instance" "bastion" {
   subnet_id = "${aws_subnet.public.0.id}"
   ami = "${lookup(var.ubuntu_ami_id, var.environment)}"
-  instance_type = "t2.micro"
+  instance_type = "t2.nano"
   key_name = "bastion-${var.environment}"
   vpc_security_group_ids = [
     "${aws_security_group.bastion_public.id}"
