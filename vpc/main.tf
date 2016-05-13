@@ -11,10 +11,10 @@ resource "aws_vpc" "main" {
 resource "aws_subnet" "private" {
   count = "${length(split(",", lookup(var.availability_zones, var.environment)))}"
   vpc_id = "${aws_vpc.main.id}"
-  availability_zone = "${lookup(var.region, var.environment)}${element(split(",", lookup(var.availability_zones, var.environment)), count.index)}"
+  availability_zone = "${var.region}${element(split(",", lookup(var.availability_zones, var.environment)), count.index)}"
   cidr_block = "${cidrsubnet(aws_vpc.main.cidr_block, 3, count.index)}"
   tags {
-    Name = "private-${var.environment}-${lookup(var.region, var.environment)}${element(split(",", lookup(var.availability_zones, var.environment)), count.index)}"
+    Name = "private-${var.environment}-${var.region}${element(split(",", lookup(var.availability_zones, var.environment)), count.index)}"
     Environment = "${var.environment}"
   }
 }
@@ -22,11 +22,11 @@ resource "aws_subnet" "private" {
 resource "aws_subnet" "public" {
   count = "${length(split(",", lookup(var.availability_zones, var.environment)))}"
   vpc_id = "${aws_vpc.main.id}"
-  availability_zone = "${lookup(var.region, var.environment)}${element(split(",", lookup(var.availability_zones, var.environment)), count.index)}"
+  availability_zone = "${var.region}${element(split(",", lookup(var.availability_zones, var.environment)), count.index)}"
   cidr_block = "${cidrsubnet(aws_vpc.main.cidr_block, 3, count.index + 3)}"
   map_public_ip_on_launch = true
   tags {
-    Name = "public-${var.environment}-${lookup(var.region, var.environment)}${element(split(",", lookup(var.availability_zones, var.environment)), count.index)}"
+    Name = "public-${var.environment}-${var.region}${element(split(",", lookup(var.availability_zones, var.environment)), count.index)}"
     Environment = "${var.environment}"
   }
 }

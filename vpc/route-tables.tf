@@ -6,7 +6,7 @@ resource "aws_route_table" "private" {
     nat_gateway_id = "${element(aws_nat_gateway.main.*.id, count.index)}"
   }
   tags {
-    Name = "private-${var.environment}-${lookup(var.region, var.environment)}${element(split(",", lookup(var.availability_zones, var.environment)), count.index)}"
+    Name = "private-${var.environment}-${var.region}${element(split(",", lookup(var.availability_zones, var.environment)), count.index)}"
     Environment = "${var.environment}"
   }
 }
