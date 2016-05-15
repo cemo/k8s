@@ -1,0 +1,9 @@
+---
+- name: download consul archive
+  get_url:
+    url: "{{ consul_url }}"
+    dest: /tmp
+    checksum: "{{ consul_checksum }}"
+
+- name: Extract consul to /usr/local/bin
+  unarchive: src=/tmp/{{ consul_package_name }} dest=/usr/local/bin copy=no

@@ -1,0 +1,7 @@
+---
+consul_version: 0.6.4
+os: linux
+arch: amd64
+consul_package_name: consul_{{ consul_version }}_{{ os }}_{{ arch }}.zip
+consul_url: https://releases.hashicorp.com/consul/{{ consul_version }}/{{ consul_package_name }}
+consul_checksum: sha256:abdf0e1856292468e2c9971420d73b805e93888e006c76324ae39416edcf0627

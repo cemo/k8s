@@ -1,0 +1,18 @@
+---
+
+- apt: update_cache=yes
+
+- name: install ntp
+  package: name=ntp state=latest
+
+- name: configure ntp to run as a service enabled at boot
+  service: name=ntp state=running enabled=yes
+
+- name: install zip
+  package: name=zip state=latest
+
+- name: install unzip
+  package: name=unzip state=latest
+
+- name: install jq
+  package: name=jq state=latest
