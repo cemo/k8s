@@ -5,10 +5,10 @@ variable "s3_bucket" {}
 
 variable "ami_id" {
   default = {
-    dev  = "ami-fce3c696"
-    test = "ami-fce3c696"
-    stge = "ami-fce3c696"
-    prod = "ami-fce3c696"
+    dev = "ami-e711f88a"
+    test = "ami-e711f88a"
+    stge = "ami-e711f88a"
+    prod = "ami-e711f88a"
   }
 }
 
