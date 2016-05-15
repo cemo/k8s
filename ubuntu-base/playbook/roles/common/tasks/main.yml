@@ -1,5 +1,4 @@
 ---
-
 - apt: update_cache=yes
 
 - name: install ntp

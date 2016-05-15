@@ -2,8 +2,10 @@
 - name: download consul archive
   get_url:
     url: "{{ consul_url }}"
-    dest: /tmp
+    dest: /tmp/{{ consul_package_name }}
     checksum: "{{ consul_checksum }}"
+  register: download
 
-- name: Extract consul to /usr/local/bin
-  unarchive: src=/tmp/{{ consul_package_name }} dest=/usr/local/bin copy=no
+- name: Extract consul to bin directory
+  unarchive: src=/tmp/{{ consul_package_name }} dest={{ consul_path }} copy=no
+  when: download.changed
