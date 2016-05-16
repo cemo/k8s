@@ -1,7 +1,7 @@
 resource "aws_instance" "bastion" {
-  subnet_id = "${element(split(",", terraform_remote_state.vpc.output.public_subnet_ids), 0)}"
-  ami = "${lookup(var.ami_id, var.environment)}"
-  instance_type = "t2.nano"
+  subnet_id = "${aws_subnet.public.0.id}"
+  ami = "${var.bastion_ami_id}"
+  instance_type = "t2.micro"
   key_name = "bastion-${var.environment}"
   vpc_security_group_ids = [
     "${aws_security_group.bastion_public.id}"
@@ -14,13 +14,13 @@ resource "aws_instance" "bastion" {
 
 resource "aws_security_group" "bastion_public" {
   name = "bastion-public-${var.environment}"
-  vpc_id = "${terraform_remote_state.vpc.output.id}"
+  vpc_id = "${aws_vpc.main.id}"
   ingress {
     from_port = 22
     to_port = 22
     protocol = "tcp"
     cidr_blocks = [
-      "${split(",", var.ssh_access_list)}"
+      "${split(",", var.bastion_ssh_access_list)}"
     ]
   }
   egress {
@@ -37,7 +37,7 @@ resource "aws_security_group" "bastion_public" {
 
 resource "aws_security_group" "bastion_private" {
   name = "bastion-private-${var.environment}"
-  vpc_id = "${terraform_remote_state.vpc.output.id}"
+  vpc_id = "${aws_vpc.main.id}"
   ingress {
     from_port = 22
     to_port = 22
@@ -57,7 +57,7 @@ resource "aws_security_group" "bastion_private" {
 }
 
 resource "aws_route53_record" "bastion" {
-  zone_id = "${terraform_remote_state.vpc.output.public_zone_id}"
+  zone_id = "${aws_route53_zone.public.zone_id}"
   name = "bastion"
   type = "A"
   ttl = "60"

@@ -1,0 +1,18 @@
+---
+
+- apt: update_cache=yes
+
+- name: add gocd GPG key
+  apt_key: url=https://download.go.cd/GOCD-GPG-KEY.asc
+
+- name: add gocd repo to sources
+  apt_repository: repo='deb https://download.go.cd /' state=present
+
+- name: install go server
+  package: name=go-server state=latest
+
+- name: install go agent
+  package: name=go-agent state=latest
+
+- name: create additional agents
+  script: ./add-agents.sh 2

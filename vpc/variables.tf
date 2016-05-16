@@ -28,3 +28,11 @@ variable "domain" {
 variable "domain_hosted_zone_id" {
   default = "Z6SB6MX6NJNME"
 }
+
+variable "bastion_ami_id" {
+  default = "ami-4b628b26"
+}
+
+variable "bastion_ssh_access_list" {
+  default = "82.132.245.10/32"
+}
