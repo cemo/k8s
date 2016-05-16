@@ -2,6 +2,7 @@ resource "aws_vpc" "main" {
   cidr_block = "${lookup(var.vpc_cidr_block, var.environment)}"
   enable_dns_support = true
   enable_dns_hostnames = true
+  instance_tenancy = "default"
   tags {
     Name = "${var.environment}"
     Environment = "${var.environment}"
