@@ -3,3 +3,5 @@
 *.tfstate*
 *.retry
 .kitchen
+ssl/
+*.box
