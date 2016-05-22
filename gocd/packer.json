@@ -3,15 +3,15 @@
     {
       "type": "amazon-ebs",
       "region": "us-east-1",
-      "source_ami": "ami-fce3c696",
+      "source_ami": "ami-af39cdc2",
       "instance_type": "c4.large",
-      "vpc_id": "vpc-5825e23f",
-      "subnet_id": "subnet-e3ca9195",
+      "vpc_id": "vpc-322ce555",
+      "subnet_id": "subnet-1f032169",
       "associate_public_ip_address": true,
       "ssh_username": "ubuntu",
-      "ami_name": "ubuntu-base-{{isotime \"20060102150405\"}}",
+      "ami_name": "gocd-{{isotime \"20060102150405\"}}",
       "tags": {
-        "Name": "ubuntu-base-{{isotime \"20060102150405\"}}"
+        "Name": "gocd-{{isotime \"20060102150405\"}}"
       }
     }
   ],

@@ -1,13 +1,14 @@
-variable "region" {}
+variable "region" {
+  default = "us-east-1"
+}
 variable "environment" {}
 variable "s3_region" {}
 variable "s3_bucket" {}
 
 variable "ami_id" {
-  default = {
-    dev  = "ami-fce3c696"
-    test = "ami-fce3c696"
-    stge = "ami-fce3c696"
-    prod = "ami-fce3c696"
-  }
+  default = "ami-2b24d046"
+}
+
+variable "instance_type" {
+  default = "t2.medium"
 }
