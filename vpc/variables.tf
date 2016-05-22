@@ -1,27 +1,9 @@
-variable "region" {}
+variable "region" {
+  default = "us-east-1"
+}
 variable "environment" {}
 variable "s3_region" {}
 variable "s3_bucket" {}
-
-variable "vpc_cidr_block" {
-  default = {
-    dev  = "1.0.0.0/16"
-    test = "2.0.0.0/16"
-    stge = "3.0.0.0/16"
-    prod = "4.0.0.0/16"
-    hub  = "5.0.0.0/16"
-  }
-}
-
-variable "availability_zones" {
-  default = {
-    dev  = "a"
-    test = "b"
-    stge = "a,b,d"
-    prod = "a,b,d"
-    hub  = "d"
-  }
-}
 
 variable "public_domain" {
   default = "devscape.io"
@@ -33,4 +15,18 @@ variable "private_domain" {
 
 variable "domain_hosted_zone_id" {
   default = "Z6SB6MX6NJNME"
+}
+
+variable "vpc_cidr_block" {}
+
+variable "availability_zones" {
+  default = "a,b,d"
+}
+
+variable "bastion_ami_id" {
+  default = "ami-fce3c696"
+}
+
+variable "bastion_instance_type" {
+  default = "t2.micro"
 }

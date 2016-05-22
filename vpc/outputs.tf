@@ -21,3 +21,7 @@ output "private_zone_id" {
 output "public_zone_id" {
   value = "${aws_route53_zone.public.zone_id}"
 }
+
+output "bastion_sg_id" {
+  value = "${aws_security_group.bastion_private.id}"
+}
