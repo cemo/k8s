@@ -1,5 +1,9 @@
 ---
-- apt: update_cache=yes
+- name: copy rc.local to ensure hostname is added in /etc/hosts if not there already
+  copy: src=rc.local dest=/etc/rc.local mode=0755
+
+- name: update repos & upgrade packages
+  apt: update_cache=yes upgrade=yes
 
 - name: install ntp
   package: name=ntp state=latest

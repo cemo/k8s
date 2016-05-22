@@ -5,14 +5,27 @@
       "region": "us-east-1",
       "source_ami": "ami-fce3c696",
       "instance_type": "c4.large",
-      "vpc_id": "vpc-5825e23f",
-      "subnet_id": "subnet-e3ca9195",
+      "vpc_id": "vpc-322ce555",
+      "subnet_id": "subnet-1f032169",
       "associate_public_ip_address": true,
       "ssh_username": "ubuntu",
       "ami_name": "ubuntu-base-{{isotime \"20060102150405\"}}",
       "tags": {
         "Name": "ubuntu-base-{{isotime \"20060102150405\"}}"
       }
+    },
+    {
+      "type": "virtualbox-ovf",
+      "headless": true,
+      "source_path": "/Users/anton/.vagrant.d/boxes/ubuntu-VAGRANTSLASH-trusty64/20160509.1.0/virtualbox/box.ovf",
+      "ssh_username": "vagrant",
+      "ssh_password": "vagrant",
+      "shutdown_command": "echo 'packer' | sudo -S shutdown -P now",
+      "vm_name": "ubuntu-base-{{isotime \"20060102150405\"}}",
+      "vboxmanage": [
+        ["modifyvm", "{{.Name}}", "--memory", "2048"],
+        ["modifyvm", "{{.Name}}", "--cpus", "2"]
+      ]
     }
   ],
   "provisioners": [
@@ -30,6 +43,13 @@
       "type": "ansible-local",
       "playbook_file": "./playbook/main.yml",
       "playbook_dir": "./playbook"
+    }
+  ],
+  "post-processors": [
+    {
+      "type": "vagrant",
+      "only": ["virtualbox-ovf"],
+      "output": "ubuntu-base-{{isotime \"20060102150405\"}}.box"
     }
   ]
 }
