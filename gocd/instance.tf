@@ -5,7 +5,6 @@ resource "aws_instance" "gocd" {
   key_name = "${var.environment}"
   iam_instance_profile = "${aws_iam_instance_profile.gocd.id}"
   vpc_security_group_ids = [
-    "${terraform_remote_state.vpc.output.bastion_sg_id}",
     "${aws_security_group.gocd.id}"
   ]
   tags {
@@ -17,6 +16,14 @@ resource "aws_instance" "gocd" {
 resource "aws_security_group" "gocd" {
   name = "gocd-${var.environment}"
   vpc_id = "${terraform_remote_state.vpc.output.id}"
+  ingress {
+    from_port = 22
+    to_port = 22
+    protocol = "tcp"
+    security_groups = [
+      "${terraform_remote_state.vpc.output.bastion_sg_id}"
+    ]
+  }
   egress {
     from_port = 0
     to_port = 0
