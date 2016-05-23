@@ -4,7 +4,7 @@ resource "aws_instance" "bastion" {
   instance_type = "${var.bastion_instance_type}"
   key_name = "${var.environment}"
   vpc_security_group_ids = [
-    "${aws_security_group.bastion_public.id}"
+    "${aws_security_group.bastion.id}"
   ]
   tags {
     Name = "bastion-${var.environment}"
@@ -12,8 +12,8 @@ resource "aws_instance" "bastion" {
   }
 }
 
-resource "aws_security_group" "bastion_public" {
-  name = "bastion-public-${var.environment}"
+resource "aws_security_group" "bastion" {
+  name = "bastion-${var.environment}"
   vpc_id = "${aws_vpc.main.id}"
   egress {
     from_port = 0
@@ -22,30 +22,7 @@ resource "aws_security_group" "bastion_public" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   tags {
-    Name = "bastion-public-${var.environment}"
-    Environment = "${var.environment}"
-  }
-}
-
-resource "aws_security_group" "bastion_private" {
-  name = "bastion-private-${var.environment}"
-  vpc_id = "${aws_vpc.main.id}"
-  ingress {
-    from_port = 22
-    to_port = 22
-    protocol = "tcp"
-    security_groups = [
-      "${aws_security_group.bastion_public.id}"
-    ]
-  }
-  egress {
-    from_port = 0
-    to_port = 0
-    protocol = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-  tags {
-    Name = "bastion-private-${var.environment}"
+    Name = "bastion-${var.environment}"
     Environment = "${var.environment}"
   }
 }
