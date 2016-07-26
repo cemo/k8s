@@ -1,7 +1,6 @@
 .DS_Store
 .terraform
 *.tfstate*
-*.retry
-.kitchen
-ssl/
-*.box
+*.pem
+*.csr
+*.srl

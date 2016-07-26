@@ -1,6 +1,0 @@
----
-- name: install pip
-  package: name=python-pip
-  
-- name: install awscli
-  pip: name=awscli
