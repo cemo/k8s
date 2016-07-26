@@ -39,9 +39,13 @@ resource "template_file" "worker_cloud_config" {
   template = "${file("${path.module}/templates/worker-cloud-config.yaml")}"
   vars {
     K8S_VERSION = "${var.k8s_version}"
-    ETCD_CLUSTER = "${terraform_remote_state.etcd.output.dns_name}"
+    ETCD_CLUSTER = "http://${terraform_remote_state.etcd.output.dns_name}:2380"
     POD_NETWORK = "${var.pod_network}"
     SERVICE_IP_RANGE = "${var.service_ip_range}"
     DNS_SERVICE_IP = "${cidrhost(var.service_ip_range, 10)}"
+    MASTER_API_SERVER = "http://${aws_route53_record.master.fqdn}:8080"
+  }
+  lifecycle {
+    create_before_destroy = true
   }
 }

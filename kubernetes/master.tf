@@ -12,63 +12,23 @@ resource "aws_instance" "master" {
     Name = "kubernetes-master-${var.environment}"
     Environment = "${var.environment}"
   }
-  provisioner "file" {
-    connection {
-      user = "core"
-      private_key = "${file("${var.key_path}/${var.environment}.pem")}"
-      bastion_private_key = "${file("${var.key_path}/${var.environment}.pem")}"
-      bastion_host = "${terraform_remote_state.vpc.output.bastion_dns_name}"
-      timeout = "2m"
-    }
-    source = "ssl/ca.pem"
-    destination = "~/ca.pem"
-  }
-  provisioner "file" {
-    connection {
-      user = "core"
-      private_key = "${file("${var.key_path}/${var.environment}.pem")}"
-      bastion_private_key = "${file("${var.key_path}/${var.environment}.pem")}"
-      bastion_host = "${terraform_remote_state.vpc.output.bastion_dns_name}"
-      timeout = "2m"
-    }
-    source = "ssl/apiserver.pem"
-    destination = "~/apiserver.pem"
-  }
-  provisioner "file" {
-    connection {
-      user = "core"
-      private_key = "${file("${var.key_path}/${var.environment}.pem")}"
-      bastion_private_key = "${file("${var.key_path}/${var.environment}.pem")}"
-      bastion_host = "${terraform_remote_state.vpc.output.bastion_dns_name}"
-      timeout = "2m"
-    }
-    source = "ssl/apiserver-key.pem"
-    destination = "~/apiserver-key.pem"
-  }
-  provisioner "remote-exec" {
-    connection {
-      user = "core"
-      private_key = "${file("${var.key_path}/${var.environment}.pem")}"
-      bastion_private_key = "${file("${var.key_path}/${var.environment}.pem")}"
-      bastion_host = "${terraform_remote_state.vpc.output.bastion_dns_name}"
-      timeout = "2m"
-    }
-    inline = [
-      "sudo mkdir -p /etc/kubernetes/ssl",
-      "sudo mv ~/*.pem /etc/kubernetes/ssl/",
-      "sudo chmod 600 /etc/kubernetes/ssl/*-key.pem",
-      "sudo chown root:root /etc/kubernetes/ssl/*-key.pem"
-    ]
-  }
 }
 
 resource "template_file" "master_cloud_config" {
   template = "${file("${path.module}/templates/master-cloud-config.yaml")}"
   vars {
     K8S_VERSION = "${var.k8s_version}"
-    ETCD_CLUSTER = "${terraform_remote_state.etcd.output.dns_name}"
+    ETCD_CLUSTER = "http://${terraform_remote_state.etcd.output.dns_name}:2380"
     POD_NETWORK = "${var.pod_network}"
     SERVICE_IP_RANGE = "${var.service_ip_range}"
     DNS_SERVICE_IP = "${cidrhost(var.service_ip_range, 10)}"
   }
+}
+
+resource "aws_route53_record" "master" {
+  zone_id = "${terraform_remote_state.vpc.output.private_zone_id}"
+  name = "kubernetes-master"
+  type = "A"
+  ttl = "60"
+  records = ["${aws_instance.master.private_ip}"]
 }
