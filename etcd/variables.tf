@@ -6,15 +6,13 @@ variable "s3_region" {}
 variable "s3_bucket" {}
 
 variable "ami_id" {
-  default = "ami-8d6485e0"
+  default = "ami-edc744fa"
 }
 
 variable "instance_type" {
   default = "t2.micro"
 }
 
-variable "node_count" {
+variable "cluster_size" {
   default = 3
 }
-
-variable "discovery_url" {}
