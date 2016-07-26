@@ -15,6 +15,12 @@ resource "aws_instance" "bastion" {
 resource "aws_security_group" "bastion" {
   name = "bastion-${var.environment}"
   vpc_id = "${aws_vpc.main.id}"
+  ingress {
+    from_port = 22
+    to_port = 22
+    protocol = "tcp"
+    cidr_blocks = ["${format("%s/32", var.home_ip)}"]
+  }
   egress {
     from_port = 0
     to_port = 0

@@ -1,3 +1,7 @@
+output "region" {
+  value = "${var.region}"
+}
+
 output "id" {
   value = "${aws_vpc.main.id}"
 }

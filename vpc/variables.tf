@@ -17,16 +17,22 @@ variable "domain_hosted_zone_id" {
   default = "Z6SB6MX6NJNME"
 }
 
-variable "vpc_cidr_block" {}
+variable "vpc_cidr_block" {
+  default = "10.100.0.0/16"
+}
 
 variable "availability_zones" {
   default = "a,b,d"
 }
 
 variable "bastion_ami_id" {
-  default = "ami-fce3c696"
+  default = "ami-368c0321"
 }
 
 variable "bastion_instance_type" {
-  default = "t2.micro"
+  default = "t2.nano"
+}
+
+variable "home_ip" {
+  default = "80.229.27.83"
 }
