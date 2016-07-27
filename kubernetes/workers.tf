@@ -15,7 +15,7 @@ resource "aws_autoscaling_group" "workers" {
   tag {
     key = "Environment"
     value = "${var.environment}"
-    propagate_at_launch = false
+    propagate_at_launch = true
   }
   lifecycle {
     create_before_destroy = true
@@ -38,12 +38,13 @@ resource "aws_launch_configuration" "worker" {
 resource "template_file" "worker_cloud_config" {
   template = "${file("${path.module}/templates/worker-cloud-config.yaml")}"
   vars {
-    K8S_VERSION = "${var.k8s_version}"
-    ETCD_CLUSTER = "http://${terraform_remote_state.etcd.output.dns_name}:2380"
+    K8S_VER = "v${var.k8s_version}_coreos.0"
+    MASTER_HOST = "${aws_route53_record.master.fqdn}"
+    ETCD_PROXY_INITIAL_CLUSTER = "http://${terraform_remote_state.etcd.output.dns_name}:2380"
+    ETCD_ENDPOINTS = "http://0.0.0.0:2379"
     POD_NETWORK = "${var.pod_network}"
     SERVICE_IP_RANGE = "${var.service_ip_range}"
     DNS_SERVICE_IP = "${cidrhost(var.service_ip_range, 10)}"
-    MASTER_API_SERVER = "http://${aws_route53_record.master.fqdn}:8080"
   }
   lifecycle {
     create_before_destroy = true

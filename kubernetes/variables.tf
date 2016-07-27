@@ -21,10 +21,6 @@ variable "service_ip_range" {
   default = "10.3.0.0/24"
 }
 
-variable "key_path" {
-  default = "/Users/anton/keys"
-}
-
 variable "master_instance_type" {
   default = "t2.medium"
 }

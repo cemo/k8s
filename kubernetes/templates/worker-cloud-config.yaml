@@ -1,10 +1,118 @@
 #cloud-config
 
 write_files:
+- path: /etc/kubernetes/ssl/generate.sh
+  permissions: '0755'
+  content: |
+    #!/bin/bash
+    set -e
+
+    SSL_DIR="/etc/kubernetes/ssl"
+    WORKER_FQDN="$(hostname)"
+    WORKER_IP="$(curl -s 169.254.169.254/latest/meta-data/local-ipv4)"
+
+    cd $SSL_DIR
+
+    cat <<'EOF' | sudo tee "worker-openssl.cnf"
+    [req]
+    req_extensions = v3_req
+    distinguished_name = req_distinguished_name
+    [req_distinguished_name]
+    [ v3_req ]
+    basicConstraints = CA:FALSE
+    keyUsage = nonRepudiation, digitalSignature, keyEncipherment
+    subjectAltName = @alt_names
+    [alt_names]
+    IP.1 = $ENV::WORKER_IP
+    EOF
+
+    openssl genrsa -out $${WORKER_FQDN}-worker-key.pem 2048
+    WORKER_IP=$${WORKER_IP} openssl req -new -key $${WORKER_FQDN}-worker-key.pem -out $${WORKER_FQDN}-worker.csr -subj "/CN=$${WORKER_FQDN}" -config worker-openssl.cnf
+    WORKER_IP=$${WORKER_IP} openssl x509 -req -in $${WORKER_FQDN}-worker.csr -CA ca.pem -CAkey ca-key.pem -CAcreateserial -out $${WORKER_FQDN}-worker.pem -days 365 -extensions v3_req -extfile worker-openssl.cnf
+
+    rm ca-key.pem ca.srl worker-openssl.cnf $${WORKER_FQDN}-worker.csr
+
+    chmod 600 $${WORKER_FQDN}-worker-key.pem
+
+    ln -s $${WORKER_FQDN}-worker.pem worker.pem
+    ln -s $${WORKER_FQDN}-worker-key.pem worker-key.pem
+
+    rm -- "$0"
+- path: /etc/kubernetes/ssl/ca.pem
+  content: |
+    -----BEGIN CERTIFICATE-----
+    MIIDGjCCAgKgAwIBAgIJAM1DCg6IrJbRMA0GCSqGSIb3DQEBBQUAMBIxEDAOBgNV
+    BAMTB2t1YmUtY2EwHhcNMTYwNzI3MTQyMTE5WhcNNDMxMjEzMTQyMTE5WjASMRAw
+    DgYDVQQDEwdrdWJlLWNhMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA
+    5LzcJGB0isMmsn0cSZejnt238dOSx6WGBz71MsvBSF8ZyFkFneS3diZlaMb+Wta9
+    s9P5aX5u1/DGgk+AG45mA9BfE7WwsfoIxFxgNHxtmNUEgS1vgpIyXoVqK622NfG0
+    itHqnpQjSs3xxH6fTp600b5ER4SwEa7QfrVqfeLStzMxRHBFGxwca9B0l1rkv5iG
+    3LxBtH3rDKSP2QcvU4E0vzOL1N2sPKDjDxag/8Hdcsdq9z5LhTD516Iga2FwV6OM
+    XNwElF8CuBZIFMU9zicF+prEATlIpAstqj36AOGozgj1ze6s+pxJx4rbQtF9WE5t
+    VCEldD2Zhrz+8R9tYpXVlwIDAQABo3MwcTAdBgNVHQ4EFgQU7cxHDbnitORjioUG
+    LgkMl+htTUkwQgYDVR0jBDswOYAU7cxHDbnitORjioUGLgkMl+htTUmhFqQUMBIx
+    EDAOBgNVBAMTB2t1YmUtY2GCCQDNQwoOiKyW0TAMBgNVHRMEBTADAQH/MA0GCSqG
+    SIb3DQEBBQUAA4IBAQCio3N1ZMkA7qdrOkeVtnr3813QTQXtNE5dEioJ3a9IekNp
+    +jg3LsXfCscmUpNfrHQeqLFx7uSGCcNjc9rBhnj9fef0agEIdlBGU35gmBo++fJM
+    u4vbaUxirGUPFF9DAH/ekym3U+jWnsDlAtTkUmnu51ns6q6aRdcxBcc0JdzCddBT
+    4dTmRAZOZUJgUeCLchctdEmaFRbKBbGvNTbkTJk9U2U57BUoT567sNOk2bec76EO
+    8W2/RniYOja0yctc1t64RqqCGqBHkEww/rBv6tl4OGJPndSjyTnv1DPmcq5Hx45h
+    mtHow2cJ+IdCVtKxo1Fhc27FpflZb8nzN6R/74IL
+    -----END CERTIFICATE-----
+- path: /etc/kubernetes/ssl/ca-key.pem
+  permissions: '0600'
+  owner: root
+  content: |
+    -----BEGIN RSA PRIVATE KEY-----
+    MIIEpAIBAAKCAQEA5LzcJGB0isMmsn0cSZejnt238dOSx6WGBz71MsvBSF8ZyFkF
+    neS3diZlaMb+Wta9s9P5aX5u1/DGgk+AG45mA9BfE7WwsfoIxFxgNHxtmNUEgS1v
+    gpIyXoVqK622NfG0itHqnpQjSs3xxH6fTp600b5ER4SwEa7QfrVqfeLStzMxRHBF
+    Gxwca9B0l1rkv5iG3LxBtH3rDKSP2QcvU4E0vzOL1N2sPKDjDxag/8Hdcsdq9z5L
+    hTD516Iga2FwV6OMXNwElF8CuBZIFMU9zicF+prEATlIpAstqj36AOGozgj1ze6s
+    +pxJx4rbQtF9WE5tVCEldD2Zhrz+8R9tYpXVlwIDAQABAoIBAQC1XJWD9kKRf3hg
+    T1itdSFTpmLhyCp6R+DEQAP0eZ/P/S+ZLhSJA77/XCRN9nHYnqmdOvZn0cqbRxpu
+    WhCuSLLUVVP9cbMe+qwW3VOeagYQBt5ieh8PPVHYphnvdfWiQfovk49emwB8oFwQ
+    u4EeujGOmDjVJ/zemGhR/w/nrn/6pomMqPZsvk8AlKrIbZrz+NJDUl0NwgCN95rG
+    HOKqQ+6/1qnUMCAJR9OznQTefTjBEpUPWUx0YKiv0colgueNWrGIdfFgb2WppALw
+    NhA7OcgZcncvK6QOjC8yHJVGBGbxgpfzYKB+j8GsyuFn4j9aTX++yex8bUXdc+oj
+    BDkR9EYhAoGBAPhkmQFBvfjt/EYkNQ2GoAO//AQy48hFXPwol23VoB7LX2dE2MNh
+    NTxU3ms9zOAzHnghVbAWs5JHuASbgIiwFaDw8JN79lplZNw9PivkDqEVRwNwY0De
+    bt8XnHEggmnLEZArR0rxCGWOWMDDXNIc9H8zxs2fMz1I6qJZQ4+PzpkRAoGBAOu+
+    KkhPIQ9kQGvtmyBAWNIdQVqyFtiHskNpdL4cgJ0EDggkUICBUue3e1URiR7bOtvH
+    jkOzW6W0Ju6xYfsl0Qj16TIw3ZCYroMALAKArl9aLtMJjY8ojMjW2HWQ88Scb8fc
+    mPLeP0a6TIsir1poloCVGEa5sbcCnDc0qQxiNEQnAoGAObJsU/1oWkU1fzlz1VN7
+    IcPbj0Ie5OsvwSbQneOsUNreq0czrpaK3hu8ml59k2psXm0n0UJErerY1MEmJxn3
+    vC2bRDbcL30z43CaW2ma+FHP7/2QIIZKbKm4XhK2GEriJoHXCpJYZ/abqRL4IZo2
+    NMHbIPIk3cxtLA7eAZ/e1nECgYBM/9oTsDTeMCKSnhNTH3Fjf8a+9vhbVUc2mZVW
+    Gz0vDAoBQstAjf0kTlvsV0PwXi8FZlLjbgv7PbKRuEKGo715LckzaZ6VAinOBBpb
+    3ugVoQE2USJ5pgcF+pbNH8FfcLFaGIWknk8QrP0fXP7lis/Nw+UgBLs1SZb4uSyW
+    LOVhdQKBgQCSTIf3Jzr9iauZMuwwYSiIrcD6AbYcHs8PPKt1h7NvalxbYXZ2Sq/X
+    LB0NHnfuyQzel44VliPYeyKBmLVZw13rXJ0dv7C/lIAy7qgjio0Vjqg80zJoPx/y
+    Q+T+I5S9Ml6zLfvA0iEMI1z5MetuGjCYBLh0/FzaPaY03BgGf8G7Vw==
+    -----END RSA PRIVATE KEY-----
 - path: /etc/flannel/options.env
   content: |
     FLANNELD_IFACE=$private_ipv4
-    FLANNELD_ETCD_ENDPOINTS=http://127.0.0.1:2379
+    FLANNELD_ETCD_ENDPOINTS=${ETCD_ENDPOINTS}
+- path: /etc/kubernetes/cni/net.d/10-calico.conf
+  content: |
+    {
+      "name": "calico",
+      "type": "flannel",
+      "delegate": {
+        "type": "calico",
+        "etcd_endpoints": "${ETCD_ENDPOINTS}",
+        "log_level": "none",
+        "log_level_stderr": "info",
+        "hostname": "$private_ipv4",
+        "policy": {
+          "type": "k8s",
+          "k8s_api_root": "https://${MASTER_HOST}:443/api/v1/",
+          "k8s_client_key": "/etc/kubernetes/ssl/worker-key.pem",
+          "k8s_client_certificate": "/etc/kubernetes/ssl/worker.pem"
+        }
+      }
+    }
 - path: /etc/kubernetes/manifests/kube-proxy.yaml
   content: |
     apiVersion: v1
@@ -16,31 +124,47 @@ write_files:
       hostNetwork: true
       containers:
       - name: kube-proxy
-        image: quay.io/coreos/hyperkube:v${K8S_VERSION}_coreos.0
+        image: quay.io/coreos/hyperkube:${K8S_VER}
         command:
         - /hyperkube
         - proxy
-        - --master=${MASTER_API_SERVER}
+        - --master=https://${MASTER_HOST}
         - --kubeconfig=/etc/kubernetes/worker-kubeconfig.yaml
         - --proxy-mode=iptables
         securityContext:
           privileged: true
         volumeMounts:
+          - mountPath: /etc/ssl/certs
+            name: "ssl-certs"
           - mountPath: /etc/kubernetes/worker-kubeconfig.yaml
             name: "kubeconfig"
             readOnly: true
+          - mountPath: /etc/kubernetes/ssl
+            name: "etc-kube-ssl"
+            readOnly: true
       volumes:
+        - name: "ssl-certs"
+          hostPath:
+            path: "/usr/share/ca-certificates"
         - name: "kubeconfig"
           hostPath:
             path: "/etc/kubernetes/worker-kubeconfig.yaml"
+        - name: "etc-kube-ssl"
+          hostPath:
+            path: "/etc/kubernetes/ssl"
 - path: /etc/kubernetes/worker-kubeconfig.yaml
   content: |
     apiVersion: v1
     kind: Config
     clusters:
     - name: local
+      cluster:
+        certificate-authority: /etc/kubernetes/ssl/ca.pem
     users:
     - name: kubelet
+      user:
+        client-certificate: /etc/kubernetes/ssl/worker.pem
+        client-key: /etc/kubernetes/ssl/worker-key.pem
     contexts:
     - context:
         cluster: local
@@ -50,8 +174,8 @@ write_files:
 
 coreos:
   etcd2:
-    listen-client-urls: "http://0.0.0.0:2379"
-    initial-cluster: "default=${ETCD_CLUSTER}"
+    listen-client-urls: "${ETCD_ENDPOINTS}"
+    initial-cluster: "default=${ETCD_PROXY_INITIAL_CLUSTER}"
     proxy: on
   update:
     reboot-strategy: "off"
@@ -71,24 +195,41 @@ coreos:
           [Unit]
           Requires=flanneld.service
           After=flanneld.service
+  - name: ssl.service
+    command: start
+    content: |
+      [Unit]
+      Description=Create worker ssl key pair
+
+      [Service]
+      ExecStart=/bin/bash /etc/kubernetes/ssl/generate.sh
+      RemainAfterExit=yes
+      Type=oneshot
   - name: kubelet.service
     command: start
     enable: true
     content: |
+      [Unit]
+      Requires=ssl.service
+      After=ssl.service
+
       [Service]
       ExecStartPre=/usr/bin/mkdir -p /etc/kubernetes/manifests
 
       Environment="RKT_OPTS=--volume=resolv,kind=host,source=/etc/resolv.conf --mount volume=resolv,target=/etc/resolv.conf"
-      Environment=KUBELET_VERSION=v${K8S_VERSION}_coreos.0
+      Environment=KUBELET_VERSION=${K8S_VER}
       ExecStart=/usr/lib/coreos/kubelet-wrapper \
-        --api-servers=${MASTER_API_SERVER} \
+        --api-servers=https://${MASTER_HOST} \
+        --network-plugin-dir=/etc/kubernetes/cni/net.d \
         --register-node=true \
         --allow-privileged=true \
         --config=/etc/kubernetes/manifests \
         --hostname-override=$private_ipv4 \
         --cluster-dns=${DNS_SERVICE_IP} \
         --cluster-domain=cluster.local \
-        --kubeconfig=/etc/kubernetes/worker-kubeconfig.yaml
+        --kubeconfig=/etc/kubernetes/worker-kubeconfig.yaml \
+        --tls-cert-file=/etc/kubernetes/ssl/worker.pem \
+        --tls-private-key-file=/etc/kubernetes/ssl/worker-key.pem
       Restart=always
       RestartSec=10
       [Install]

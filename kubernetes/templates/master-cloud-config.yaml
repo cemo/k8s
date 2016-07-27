@@ -1,10 +1,95 @@
 #cloud-config
 
 write_files:
+- path: /etc/kubernetes/ssl/ca.pem
+  content: |
+    -----BEGIN CERTIFICATE-----
+    MIIDGjCCAgKgAwIBAgIJAM1DCg6IrJbRMA0GCSqGSIb3DQEBBQUAMBIxEDAOBgNV
+    BAMTB2t1YmUtY2EwHhcNMTYwNzI3MTQyMTE5WhcNNDMxMjEzMTQyMTE5WjASMRAw
+    DgYDVQQDEwdrdWJlLWNhMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA
+    5LzcJGB0isMmsn0cSZejnt238dOSx6WGBz71MsvBSF8ZyFkFneS3diZlaMb+Wta9
+    s9P5aX5u1/DGgk+AG45mA9BfE7WwsfoIxFxgNHxtmNUEgS1vgpIyXoVqK622NfG0
+    itHqnpQjSs3xxH6fTp600b5ER4SwEa7QfrVqfeLStzMxRHBFGxwca9B0l1rkv5iG
+    3LxBtH3rDKSP2QcvU4E0vzOL1N2sPKDjDxag/8Hdcsdq9z5LhTD516Iga2FwV6OM
+    XNwElF8CuBZIFMU9zicF+prEATlIpAstqj36AOGozgj1ze6s+pxJx4rbQtF9WE5t
+    VCEldD2Zhrz+8R9tYpXVlwIDAQABo3MwcTAdBgNVHQ4EFgQU7cxHDbnitORjioUG
+    LgkMl+htTUkwQgYDVR0jBDswOYAU7cxHDbnitORjioUGLgkMl+htTUmhFqQUMBIx
+    EDAOBgNVBAMTB2t1YmUtY2GCCQDNQwoOiKyW0TAMBgNVHRMEBTADAQH/MA0GCSqG
+    SIb3DQEBBQUAA4IBAQCio3N1ZMkA7qdrOkeVtnr3813QTQXtNE5dEioJ3a9IekNp
+    +jg3LsXfCscmUpNfrHQeqLFx7uSGCcNjc9rBhnj9fef0agEIdlBGU35gmBo++fJM
+    u4vbaUxirGUPFF9DAH/ekym3U+jWnsDlAtTkUmnu51ns6q6aRdcxBcc0JdzCddBT
+    4dTmRAZOZUJgUeCLchctdEmaFRbKBbGvNTbkTJk9U2U57BUoT567sNOk2bec76EO
+    8W2/RniYOja0yctc1t64RqqCGqBHkEww/rBv6tl4OGJPndSjyTnv1DPmcq5Hx45h
+    mtHow2cJ+IdCVtKxo1Fhc27FpflZb8nzN6R/74IL
+    -----END CERTIFICATE-----
+- path: /etc/kubernetes/ssl/apiserver.pem
+  content: |
+    -----BEGIN CERTIFICATE-----
+    MIIDZDCCAkygAwIBAgIJAJ//LzjY4dNAMA0GCSqGSIb3DQEBBQUAMBIxEDAOBgNV
+    BAMTB2t1YmUtY2EwHhcNMTYwNzI3MTQyMTE5WhcNMTcwNzI3MTQyMTE5WjAZMRcw
+    FQYDVQQDDA5rdWJlLWFwaXNlcnZlcjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCC
+    AQoCggEBAK9mO55Q4WNkwQaOkdnNnI9JEsPXAF3BDOAn0/CRa91AfkGWBXFVh8jZ
+    tR6RxckFCyUXCBOez65eligLXFHa/H0NVxkNdLr2kLFZ7o3zHXY/XZkCCPprYkdt
+    iiy2/QvqF80nhpJAobp3LMCJhO+PKyh+1vq/YoohD/krGOblpLd1fl+aa8jST9Cp
+    8tKxzqWOy8lFi5VIFAo+hW0ihCKOe3ay6Vm+ewz4stmwBJFmPer/pFu9pAiywsdC
+    qD9T19xf1aAyDVr+mdAYBsj8L8q1HXFRFHGzy5g51JD3aQx8fz3bU/uZRpkBwUMr
+    qfE3fDnTFpwyshKljkuWZWhUwCqhgxkCAwEAAaOBtTCBsjAJBgNVHRMEAjAAMAsG
+    A1UdDwQEAwIF4DCBlwYDVR0RBIGPMIGMggprdWJlcm5ldGVzghJrdWJlcm5ldGVz
+    LmRlZmF1bHSCFmt1YmVybmV0ZXMuZGVmYXVsdC5zdmOCJGt1YmVybmV0ZXMuZGVm
+    YXVsdC5zdmMuY2x1c3Rlci5sb2NhbIIma3ViZXJuZXRlcy1tYXN0ZXIuZGV2LmRl
+    dnNjYXBlLnByaXZhdGWHBAoDAAEwDQYJKoZIhvcNAQEFBQADggEBAJ4p0Ik4IABH
+    YVJYfPwdrkPA62jYsEQycKyqYmqKdAPnN1rG+3SskyxNuZ9J7EpQhifaYDpLQR8A
+    jH42heQu3OcZ2l4oLhK9ExwMobQ5N5oTEYFU2PQSLkxLbeafjWTojz7CgD0ulRiE
+    ccvp37WifdTtoVFr5x3Ov9oero7lSkbtZSPmUqXbvrW7TcXYHyeH+D+MSZMXQIcc
+    YytJJ5CbbSMawbl/Mk0DNek1OoyVz83/nKKeCkFfjswkuRLKT6b8WiE4hw84rv4K
+    8CxTN3Aa0Wp2+lrEIt6jfDHxm6bxyGSNzdj5vAPEqyhLMr8phsUw59rtGrUMwemT
+    s2s6b+NrE44=
+    -----END CERTIFICATE-----
+- path: /etc/kubernetes/ssl/apiserver-key.pem
+  permissions: '0600'
+  owner: root
+  content: |
+    -----BEGIN RSA PRIVATE KEY-----
+    MIIEowIBAAKCAQEAr2Y7nlDhY2TBBo6R2c2cj0kSw9cAXcEM4CfT8JFr3UB+QZYF
+    cVWHyNm1HpHFyQULJRcIE57Prl6WKAtcUdr8fQ1XGQ10uvaQsVnujfMddj9dmQII
+    +mtiR22KLLb9C+oXzSeGkkChuncswImE748rKH7W+r9iiiEP+SsY5uWkt3V+X5pr
+    yNJP0Kny0rHOpY7LyUWLlUgUCj6FbSKEIo57drLpWb57DPiy2bAEkWY96v+kW72k
+    CLLCx0KoP1PX3F/VoDINWv6Z0BgGyPwvyrUdcVEUcbPLmDnUkPdpDHx/PdtT+5lG
+    mQHBQyup8Td8OdMWnDKyEqWOS5ZlaFTAKqGDGQIDAQABAoIBAQCFPzoNZE5FTtZg
+    39AnUU8dfxrVUjFCCBV6+GbGvALge00vEAQkfCCCUfmJNp61vrIfxCZrmVsWkV6r
+    Hy5MNPtZGNhQ/Orv2b5ELRjQF6ALI8o8IdKmQwvPTYUJwR3tfjIEtYFC+/yhBkYm
+    IpKt1uqngexZYyk93C4hUT9CsbR3dXWlyXzygxCqdga6RdF8vQRt2ZfOzKUkVQze
+    adds2fcabREj93HgEiRhvErBZtundthcE80ZiQ5pjFMtxv0rA+cbRlR7PzJZYXON
+    ejz+uCL9FHssfaUm9UmwXgydXF1AgPUrCtvM/6eIHvQmqsYgu6t4/TH39cTpq2WU
+    0cHdhBfxAoGBANqRA9SR48qBV1pFrvQEiGdEvQG4bL9UcSUCErZyVwq/Jj7DBkue
+    QG3fOQSiwQdHcveiCxAdSQIgt4cUNcfEuIeCwBTV2LoNBWik0FRKUQp9myJgFPj2
+    4Ft+7yJtRD0nGKwxeFF0pQ1nA9ilgA/GIFbZ9ctkdMSRWA63lxbpDxEtAoGBAM1w
+    kVzb7iOq4tiOQ1G+Vhyjw+IMrJS8vip06PO6z+Cfllse1TzkL7/izbCRiFizy5zO
+    cxBok5etP/dzng+BljE3c2GDzBqH78wPEeyjxDv6Zy+Lq2l4Vy5z8NA+L95aIOcw
+    coZAoUW0xBwHuGgj8sZmENnCDhtD/QevFVujP3UdAoGAd5Y0tFAGhLx0IQ5ThWwd
+    ffNcPt67kYwQRCF4P58cBONFd72ZajJyKiuitOigGO18+AUPbIe5dJKWGDB0pJL8
+    LBjcJApFhLavKOxUmGn5IXZMNWjA0N+zLhyrlviWB6emlkCTBm5+CHE+54DWKstK
+    0np7RAf447xqo9LLtltaRRkCgYAK690ObrKuOrtsf8OcaN3zD9GuBrZ2AcKqRyTL
+    MDc03ccEeRMk9YyESu5cYKA69vPwFhmP2b9e5NrtsLvKXz04yJXdrUAAeRGKa5Ks
+    Xdhkx98MbARkyvz3fzpiF6w7ydbN84ljEbSBHCcAxnhLMP4LBgoHSYWudWLSMcCU
+    6ozJEQKBgAkonMdn11hau8u1O3Zlr1leTq3/kpNFuQuhDEWntzQNsw0uPpxFpbtX
+    FyCaiOMfYhSAvUqiBezEizYhb56rISiR5k/1wxWio+zwAJYCJLtkuMnqzdTWuZVl
+    5XJTmsrseeiXQQuqAGbAotXH6BkMPkSBS0W7O7l7dkm827X4He+o
+    -----END RSA PRIVATE KEY-----
+- path: /opt/bin/wupiao
+  permissions: '0755'
+  content: |
+    #!/bin/bash
+    # [w]ait [u]ntil [p]ort [i]s [a]ctually [o]pen
+    [ -n "$1" ] && \
+      until curl -o /dev/null -sIf http://$${1}; do \
+        sleep 1 && echo .;
+      done;
+    exit $?
 - path: /etc/flannel/options.env
   content: |
     FLANNELD_IFACE=$private_ipv4
-    FLANNELD_ETCD_ENDPOINTS=http://127.0.0.1:2379
+    FLANNELD_ETCD_ENDPOINTS=${ETCD_ENDPOINTS}
 - path: /etc/kubernetes/manifests/kube-apiserver.yaml
   content: |
     apiVersion: v1
@@ -16,23 +101,43 @@ write_files:
       hostNetwork: true
       containers:
       - name: kube-apiserver
-        image: quay.io/coreos/hyperkube:v${K8S_VERSION}_coreos.0
+        image: quay.io/coreos/hyperkube:${K8S_VER}
         command:
         - /hyperkube
         - apiserver
-        - --insecure-bind-address=0.0.0.0
-        - --insecure-port=8080
-        - --etcd-servers=http://127.0.0.1:2379
+        - --bind-address=0.0.0.0
+        - --etcd-servers=${ETCD_ENDPOINTS}
         - --allow-privileged=true
         - --service-cluster-ip-range=${SERVICE_IP_RANGE}
+        - --secure-port=443
         - --advertise-address=$private_ipv4
         - --admission-control=NamespaceLifecycle,LimitRanger,ServiceAccount,ResourceQuota
+        - --tls-cert-file=/etc/kubernetes/ssl/apiserver.pem
+        - --tls-private-key-file=/etc/kubernetes/ssl/apiserver-key.pem
+        - --client-ca-file=/etc/kubernetes/ssl/ca.pem
+        - --service-account-key-file=/etc/kubernetes/ssl/apiserver-key.pem
         - --runtime-config=extensions/v1beta1=true,extensions/v1beta1/networkpolicies=true
-        - --cloud-provider=aws
         ports:
+        - containerPort: 443
+          hostPort: 443
+          name: https
         - containerPort: 8080
           hostPort: 8080
-          name: http
+          name: local
+        volumeMounts:
+        - mountPath: /etc/kubernetes/ssl
+          name: ssl-certs-kubernetes
+          readOnly: true
+        - mountPath: /etc/ssl/certs
+          name: ssl-certs-host
+          readOnly: true
+      volumes:
+      - hostPath:
+          path: /etc/kubernetes/ssl
+        name: ssl-certs-kubernetes
+      - hostPath:
+          path: /usr/share/ca-certificates
+        name: ssl-certs-host
 - path: /etc/kubernetes/manifests/kube-proxy.yaml
   content: |
     apiVersion: v1
@@ -44,7 +149,7 @@ write_files:
       hostNetwork: true
       containers:
       - name: kube-proxy
-        image: quay.io/coreos/hyperkube:v${K8S_VERSION}_coreos.0
+        image: quay.io/coreos/hyperkube:${K8S_VER}
         command:
         - /hyperkube
         - proxy
@@ -52,6 +157,14 @@ write_files:
         - --proxy-mode=iptables
         securityContext:
           privileged: true
+        volumeMounts:
+        - mountPath: /etc/ssl/certs
+          name: ssl-certs-host
+          readOnly: true
+      volumes:
+      - hostPath:
+          path: /usr/share/ca-certificates
+        name: ssl-certs-host
 - path: /etc/kubernetes/manifests/kube-controller-manager.yaml
   content: |
     apiVersion: v1
@@ -63,12 +176,14 @@ write_files:
       hostNetwork: true
       containers:
       - name: kube-controller-manager
-        image: quay.io/coreos/hyperkube:v${K8S_VERSION}_coreos.0
+        image: quay.io/coreos/hyperkube:${K8S_VER}
         command:
         - /hyperkube
         - controller-manager
         - --master=http://127.0.0.1:8080
         - --leader-elect=true
+        - --service-account-private-key-file=/etc/kubernetes/ssl/apiserver-key.pem
+        - --root-ca-file=/etc/kubernetes/ssl/ca.pem
         livenessProbe:
           httpGet:
             host: 127.0.0.1
@@ -76,6 +191,20 @@ write_files:
             port: 10252
           initialDelaySeconds: 15
           timeoutSeconds: 1
+        volumeMounts:
+        - mountPath: /etc/kubernetes/ssl
+          name: ssl-certs-kubernetes
+          readOnly: true
+        - mountPath: /etc/ssl/certs
+          name: ssl-certs-host
+          readOnly: true
+      volumes:
+      - hostPath:
+          path: /etc/kubernetes/ssl
+        name: ssl-certs-kubernetes
+      - hostPath:
+          path: /usr/share/ca-certificates
+        name: ssl-certs-host
 - path: /etc/kubernetes/manifests/kube-scheduler.yaml
   content: |
     apiVersion: v1
@@ -87,7 +216,7 @@ write_files:
       hostNetwork: true
       containers:
       - name: kube-scheduler
-        image: quay.io/coreos/hyperkube:v${K8S_VERSION}_coreos.0
+        image: quay.io/coreos/hyperkube:${K8S_VER}
         command:
         - /hyperkube
         - scheduler
@@ -100,148 +229,17 @@ write_files:
             port: 10251
           initialDelaySeconds: 15
           timeoutSeconds: 1
-- path: /etc/kubernetes/manifests/kube-dns.yaml
+- path: /etc/kubernetes/kube-dns-svc.json
   content: |
-    apiVersion: v1
-    kind: Service
-    metadata:
-      name: kube-dns
-      namespace: kube-system
-      labels:
-        k8s-app: kube-dns
-        kubernetes.io/cluster-service: "true"
-        kubernetes.io/name: "KubeDNS"
-    spec:
-      selector:
-        k8s-app: kube-dns
-      clusterIP: ${DNS_SERVICE_IP}
-      ports:
-      - name: dns
-        port: 53
-        protocol: UDP
-      - name: dns-tcp
-        port: 53
-        protocol: TCP
-- path: /etc/kubernetes/manifests/kube-dns-rc.yaml
+    ${KUBE_DNS_SVC}
+- path: /etc/kubernetes/kube-dns-rc.json
   content: |
-    apiVersion: v1
-    kind: ReplicationController
-    metadata:
-      name: kube-dns-v11
-      namespace: kube-system
-      labels:
-        k8s-app: kube-dns
-        version: v11
-        kubernetes.io/cluster-service: "true"
-    spec:
-      replicas: 1
-      selector:
-        k8s-app: kube-dns
-        version: v11
-      template:
-        metadata:
-          labels:
-            k8s-app: kube-dns
-            version: v11
-            kubernetes.io/cluster-service: "true"
-        spec:
-          containers:
-          - name: etcd
-            image: gcr.io/google_containers/etcd-amd64:2.2.1
-            resources:
-              limits:
-                cpu: 100m
-                memory: 500Mi
-              requests:
-                cpu: 100m
-                memory: 50Mi
-            command:
-            - /usr/local/bin/etcd
-            - -data-dir
-            - /var/etcd/data
-            - -listen-client-urls
-            - http://127.0.0.1:2379,http://127.0.0.1:4001
-            - -advertise-client-urls
-            - http://127.0.0.1:2379,http://127.0.0.1:4001
-            - -initial-cluster-token
-            - skydns-etcd
-            volumeMounts:
-            - name: etcd-storage
-              mountPath: /var/etcd/data
-          - name: kube2sky
-            image: gcr.io/google_containers/kube2sky:1.14
-            resources:
-              limits:
-                cpu: 100m
-                memory: 200Mi
-              requests:
-                cpu: 100m
-                memory: 50Mi
-            livenessProbe:
-              httpGet:
-                path: /healthz
-                port: 8080
-                scheme: HTTP
-              initialDelaySeconds: 60
-              timeoutSeconds: 5
-              successThreshold: 1
-              failureThreshold: 5
-            readinessProbe:
-              httpGet:
-                path: /readiness
-                port: 8081
-                scheme: HTTP
-              initialDelaySeconds: 30
-              timeoutSeconds: 5
-            args:
-            # command = "/kube2sky"
-            - --domain=cluster.local
-          - name: skydns
-            image: gcr.io/google_containers/skydns:2015-10-13-8c72f8c
-            resources:
-              limits:
-                cpu: 100m
-                memory: 200Mi
-              requests:
-                cpu: 100m
-                memory: 50Mi
-            args:
-            # command = "/skydns"
-            - -machines=http://127.0.0.1:4001
-            - -addr=0.0.0.0:53
-            - -ns-rotate=false
-            - -domain=cluster.local.
-            ports:
-            - containerPort: 53
-              name: dns
-              protocol: UDP
-            - containerPort: 53
-              name: dns-tcp
-              protocol: TCP
-          - name: healthz
-            image: gcr.io/google_containers/exechealthz:1.0
-            resources:
-              limits:
-                cpu: 10m
-                memory: 20Mi
-              requests:
-                cpu: 10m
-                memory: 20Mi
-            args:
-            - -cmd=nslookup kubernetes.default.svc.cluster.local 127.0.0.1 >/dev/null
-            - -port=8080
-            ports:
-            - containerPort: 8080
-              protocol: TCP
-          volumes:
-          - name: etcd-storage
-            emptyDir: {}
-          dnsPolicy: Default
+    ${KUBE_DNS_RC}
 
 coreos:
   etcd2:
-    listen-client-urls: "http://0.0.0.0:2379"
-    initial-cluster: "default=${ETCD_CLUSTER}"
+    listen-client-urls: "${ETCD_ENDPOINTS}"
+    initial-cluster: "default=${ETCD_PROXY_INITIAL_CLUSTER}"
     proxy: on
   update:
     reboot-strategy: "off"
@@ -254,7 +252,7 @@ coreos:
         content: |
           [Service]
           ExecStartPre=/usr/bin/ln -sf /etc/flannel/options.env /run/flannel/options.env
-          ExecStartPre=/usr/bin/curl -X PUT -d "value={\"Network\":\"${POD_NETWORK}\",\"Backend\":{\"Type\":\"vxlan\"}}" "http://127.0.0.1:2379/v2/keys/coreos.com/network/config"
+          ExecStartPre=/usr/bin/curl -X PUT -d "value={\"Network\":\"${POD_NETWORK}\",\"Backend\":{\"Type\":\"vxlan\"}}" "${ETCD_ENDPOINTS}/v2/keys/coreos.com/network/config"
   - name: docker.service
     drop-ins:
       - name: 40-flannel.conf
@@ -270,9 +268,10 @@ coreos:
       ExecStartPre=/usr/bin/mkdir -p /etc/kubernetes/manifests
 
       Environment="RKT_OPTS=--volume=resolv,kind=host,source=/etc/resolv.conf --mount volume=resolv,target=/etc/resolv.conf"
-      Environment=KUBELET_VERSION=v${K8S_VERSION}_coreos.0
+      Environment=KUBELET_VERSION=${K8S_VER}
       ExecStart=/usr/lib/coreos/kubelet-wrapper \
         --api-servers=http://127.0.0.1:8080 \
+        --network-plugin-dir=/etc/kubernetes/cni/net.d \
         --register-schedulable=false \
         --allow-privileged=true \
         --config=/etc/kubernetes/manifests \
@@ -283,3 +282,15 @@ coreos:
       RestartSec=10
       [Install]
       WantedBy=multi-user.target
+  - name: kube-dns.service
+    command: start
+    content: |
+      [Unit]
+      Description=Create kube-dns service
+
+      [Service]
+      ExecStartPre=/opt/bin/wupiao 127.0.0.1:8080
+      ExecStart=/usr/bin/curl -H "Content-Type: application/json" -XPOST -d @/etc/kubernetes/kube-dns-svc.json "http://127.0.0.1:8080/api/v1/namespaces/kube-system/services"
+      ExecStart=/usr/bin/curl -H "Content-Type: application/json" -XPOST -d @/etc/kubernetes/kube-dns-rc.json "http://127.0.0.1:8080/api/v1/namespaces/kube-system/replicationcontrollers"
+      RemainAfterExit=yes
+      Type=oneshot

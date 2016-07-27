@@ -10,6 +10,14 @@ resource "aws_security_group" "kubernetes" {
     ]
   }
   ingress {
+    from_port = 443
+    to_port = 443
+    protocol = "tcp"
+    security_groups = [
+      "${terraform_remote_state.vpc.output.bastion_sg_id}"
+    ]
+  }
+  ingress {
     from_port = 8080
     to_port = 8080
     protocol = "tcp"
@@ -52,6 +60,28 @@ resource "aws_iam_role" "kubernetes" {
         "Service": "ec2.amazonaws.com"
       },
       "Effect": "Allow"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy" "kubernetes" {
+  name = "kubernetes-${var.environment}"
+  role = "${aws_iam_role.kubernetes.id}"
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "autoscaling:*",
+        "ec2:*",
+        "elasticloadbalancing:*",
+        "route53:*"
+      ],
+      "Effect": "Allow",
+      "Resource": "*"
     }
   ]
 }
