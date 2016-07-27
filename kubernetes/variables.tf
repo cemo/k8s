@@ -22,7 +22,7 @@ variable "service_ip_range" {
 }
 
 variable "master_instance_type" {
-  default = "t2.medium"
+  default = "m3.medium"
 }
 
 variable "worker_instance_type" {

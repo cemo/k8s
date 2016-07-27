@@ -44,6 +44,7 @@ resource "aws_security_group" "kubernetes" {
 }
 
 resource "aws_iam_instance_profile" "kubernetes" {
+  depends_on = ["aws_iam_role.kubernetes"]
   name = "kubernetes-${var.environment}"
   roles = ["${aws_iam_role.kubernetes.name}"]
 }

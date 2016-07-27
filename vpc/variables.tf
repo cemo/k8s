@@ -36,3 +36,7 @@ variable "bastion_instance_type" {
 variable "home_ip" {
   default = "80.229.27.83"
 }
+
+variable "kubernetes_cluster" {
+  default = "devscape"
+}

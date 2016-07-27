@@ -105,6 +105,7 @@ write_files:
         command:
         - /hyperkube
         - apiserver
+        - --cloud-provider=aws
         - --bind-address=0.0.0.0
         - --etcd-servers=${ETCD_ENDPOINTS}
         - --allow-privileged=true
@@ -180,6 +181,7 @@ write_files:
         command:
         - /hyperkube
         - controller-manager
+        - --cloud-provider=aws
         - --master=http://127.0.0.1:8080
         - --leader-elect=true
         - --service-account-private-key-file=/etc/kubernetes/ssl/apiserver-key.pem
@@ -271,6 +273,7 @@ coreos:
       Environment=KUBELET_VERSION=${K8S_VER}
       ExecStart=/usr/lib/coreos/kubelet-wrapper \
         --api-servers=http://127.0.0.1:8080 \
+        --cloud-provider=aws \
         --network-plugin-dir=/etc/kubernetes/cni/net.d \
         --register-schedulable=false \
         --allow-privileged=true \

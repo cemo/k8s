@@ -11,6 +11,7 @@ resource "aws_instance" "master" {
   tags {
     Name = "kubernetes-master-${var.environment}"
     Environment = "${var.environment}"
+    KubernetesCluster = "${terraform_remote_state.vpc.output.kubernetes_cluster}"
   }
 }
 

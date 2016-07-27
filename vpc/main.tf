@@ -6,6 +6,7 @@ resource "aws_vpc" "main" {
   tags {
     Name = "${var.environment}"
     Environment = "${var.environment}"
+    KubernetesCluster = "${var.kubernetes_cluster}"
   }
 }
 
@@ -17,6 +18,7 @@ resource "aws_subnet" "private" {
   tags {
     Name = "private-${var.environment}-${var.region}${element(split(",", var.availability_zones), count.index)}"
     Environment = "${var.environment}"
+    KubernetesCluster = "${var.kubernetes_cluster}"
   }
 }
 
@@ -29,6 +31,7 @@ resource "aws_subnet" "public" {
   tags {
     Name = "public-${var.environment}-${var.region}${element(split(",", var.availability_zones), count.index)}"
     Environment = "${var.environment}"
+    KubernetesCluster = "${var.kubernetes_cluster}"
   }
 }
 

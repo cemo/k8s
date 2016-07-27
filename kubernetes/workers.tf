@@ -17,6 +17,11 @@ resource "aws_autoscaling_group" "workers" {
     value = "${var.environment}"
     propagate_at_launch = true
   }
+  tag {
+    key = "KubernetesCluster"
+    value = "${terraform_remote_state.vpc.output.kubernetes_cluster}"
+    propagate_at_launch = true
+  }
   lifecycle {
     create_before_destroy = true
   }

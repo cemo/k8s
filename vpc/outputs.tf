@@ -33,3 +33,7 @@ output "bastion_sg_id" {
 output "bastion_dns_name" {
   value = "${aws_route53_record.bastion.fqdn}"
 }
+
+output "kubernetes_cluster" {
+  value = "${var.kubernetes_cluster}"
+}
