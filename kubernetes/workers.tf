@@ -50,6 +50,8 @@ resource "template_file" "worker_cloud_config" {
     POD_NETWORK = "${var.pod_network}"
     SERVICE_IP_RANGE = "${var.service_ip_range}"
     DNS_SERVICE_IP = "${cidrhost(var.service_ip_range, 10)}"
+    CA_PEM = "${base64encode(file("${path.module}/ssl/ca.pem"))}"
+    CA_KEY_PEM = "${base64encode(file("${path.module}/ssl/ca-key.pem"))}"
   }
   lifecycle {
     create_before_destroy = true
