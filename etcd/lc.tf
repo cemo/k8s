@@ -18,7 +18,7 @@ resource "aws_security_group" "etcd" {
     from_port = 22
     to_port = 22
     protocol = "tcp"
-    security_groups = ["${terraform_remote_state.vpc.output.bastion_sg_id}"]
+    security_groups = ["${terraform_remote_state.vpc.output.vpn_sg_id}"]
   }
   ingress {
     from_port = 2379

@@ -1,0 +1,2 @@
+public_hostname=${public_hostname}
+reroute_dns=${reroute_dns}

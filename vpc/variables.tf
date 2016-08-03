@@ -25,12 +25,12 @@ variable "availability_zones" {
   default = "a,b,d"
 }
 
-variable "bastion_ami_id" {
-  default = "ami-368c0321"
+variable "vpn_ami_id" {
+  default = "ami-38a3292f"
 }
 
-variable "bastion_instance_type" {
-  default = "t2.nano"
+variable "vpn_instance_type" {
+  default = "t2.micro"
 }
 
 variable "home_ip" {
