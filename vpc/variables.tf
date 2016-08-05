@@ -30,14 +30,8 @@ variable "vpc_cidr_block" {
   }
 }
 
-variable "public_subnet_count" {
-  default = 3
-}
+variable "public_subnet_count" {}
 
-variable "private_subnet_count" {
-  default = 3
-}
+variable "private_subnet_count" {}
 
-variable "vpn_on_off" {
-  default = 0
-}
+variable "vpn_on_off" {}

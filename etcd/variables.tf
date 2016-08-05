@@ -13,6 +13,4 @@ variable "instance_type" {
   default = "t2.micro"
 }
 
-variable "cluster_size" {
-  default = 3
-}
+variable "cluster_size" {}

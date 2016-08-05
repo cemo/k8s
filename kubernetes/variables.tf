@@ -29,14 +29,8 @@ variable "worker_instance_type" {
   default = "t2.micro"
 }
 
-variable "desired_workers" {
-  default = 1
-}
+variable "desired_workers" {}
 
-variable "min_workers" {
-  default = 1
-}
+variable "min_workers" {}
 
-variable "max_workers" {
-  default = 1
-}
+variable "max_workers" {}
