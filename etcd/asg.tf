@@ -1,5 +1,6 @@
 resource "aws_autoscaling_group" "etcd" {
   name = "etcd-${var.environment}"
+  force_delete = true
   min_size = "${var.cluster_size}"
   max_size = "${var.cluster_size}"
   desired_capacity = "${var.cluster_size}"

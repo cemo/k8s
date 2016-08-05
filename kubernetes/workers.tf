@@ -1,5 +1,6 @@
 resource "aws_autoscaling_group" "workers" {
   name = "kubernetes-workers-${var.environment}"
+  force_delete = true
   vpc_zone_identifier = ["${data.terraform_remote_state.vpc.private_subnet_ids}"]
   desired_capacity = "${var.desired_workers}"
   min_size = "${var.min_workers}"
