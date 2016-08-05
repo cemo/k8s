@@ -3,24 +3,24 @@ resource "aws_instance" "master" {
   ami = "${var.ami_id}"
   instance_type = "${var.master_instance_type}"
   key_name = "${var.environment}"
-  subnet_id = "${element(split(",", terraform_remote_state.vpc.output.private_subnet_ids), 0)}"
+  subnet_id = "${data.terraform_remote_state.vpc.private_subnet_ids[0]}"
   iam_instance_profile = "${aws_iam_instance_profile.kubernetes.id}"
-  user_data = "${template_file.master_cloud_config.rendered}"
+  user_data = "${data.template_file.master_cloud_config.rendered}"
   vpc_security_group_ids = [
     "${aws_security_group.kubernetes.id}"
   ]
   tags {
     Name = "kubernetes-master-${var.environment}"
     Environment = "${var.environment}"
-    KubernetesCluster = "${terraform_remote_state.vpc.output.kubernetes_cluster}"
+    KubernetesCluster = "${data.terraform_remote_state.vpc.kubernetes_cluster}"
   }
 }
 
-resource "template_file" "master_cloud_config" {
+data "template_file" "master_cloud_config" {
   template = "${file("${path.module}/templates/master-cloud-config.yaml")}"
   vars {
     K8S_VER = "v${var.k8s_version}_coreos.0"
-    ETCD_PROXY_INITIAL_CLUSTER = "http://${terraform_remote_state.etcd.output.dns_name}:2380"
+    ETCD_PROXY_INITIAL_CLUSTER = "http://${data.terraform_remote_state.etcd.dns_name}:2380"
     ETCD_ENDPOINTS = "http://0.0.0.0:2379"
     POD_NETWORK = "${var.pod_network}"
     SERVICE_IP_RANGE = "${var.service_ip_range}"
@@ -32,7 +32,7 @@ resource "template_file" "master_cloud_config" {
 }
 
 resource "aws_route53_record" "master" {
-  zone_id = "${terraform_remote_state.vpc.output.private_zone_id}"
+  zone_id = "${data.terraform_remote_state.vpc.private_zone_id}"
   name = "kubernetes-master"
   type = "A"
   ttl = "60"

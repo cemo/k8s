@@ -1,12 +1,12 @@
 resource "aws_security_group" "kubernetes" {
   name = "kubernetes-${var.environment}"
-  vpc_id = "${terraform_remote_state.vpc.output.id}"
+  vpc_id = "${data.terraform_remote_state.vpc.vpc_id}"
   ingress {
     from_port = 22
     to_port = 22
     protocol = "tcp"
     security_groups = [
-      "${terraform_remote_state.vpc.output.vpn_sg_id}"
+      "${data.terraform_remote_state.vpc.vpn_sg_id}"
     ]
   }
   ingress {
@@ -14,7 +14,7 @@ resource "aws_security_group" "kubernetes" {
     to_port = 443
     protocol = "tcp"
     security_groups = [
-      "${terraform_remote_state.vpc.output.vpn_sg_id}"
+      "${data.terraform_remote_state.vpc.vpn_sg_id}"
     ]
   }
   ingress {
@@ -22,7 +22,7 @@ resource "aws_security_group" "kubernetes" {
     to_port = 8080
     protocol = "tcp"
     security_groups = [
-      "${terraform_remote_state.vpc.output.vpn_sg_id}"
+      "${data.terraform_remote_state.vpc.vpn_sg_id}"
     ]
   }
   ingress {

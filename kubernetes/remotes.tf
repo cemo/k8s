@@ -1,4 +1,4 @@
-resource "terraform_remote_state" "vpc" {
+data "terraform_remote_state" "vpc" {
   backend = "s3"
   config {
     region = "${var.s3_region}"
@@ -7,7 +7,7 @@ resource "terraform_remote_state" "vpc" {
   }
 }
 
-resource "terraform_remote_state" "etcd" {
+data "terraform_remote_state" "etcd" {
   backend = "s3"
   config {
     region = "${var.s3_region}"
