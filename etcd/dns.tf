@@ -1,5 +1,5 @@
 resource "aws_route53_record" "etcd" {
-  zone_id = "${terraform_remote_state.vpc.output.private_zone_id}"
+  zone_id = "${data.terraform_remote_state.vpc.private_zone_id}"
   name = "etcd"
   type = "A"
   alias {

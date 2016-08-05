@@ -42,6 +42,14 @@ output "kubernetes_cluster" {
   value = "k8s-${var.environment}"
 }
 
+output "vpn_private_ip" {
+  value = "${module.vpn.private_ip}"
+}
+
+output "vpn_public_ip" {
+  value = "${module.vpn.public_ip}"
+}
+
 output "vpn_sg_id" {
   value = "${module.vpn.sg_id}"
 }

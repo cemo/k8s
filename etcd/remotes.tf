@@ -1,4 +1,4 @@
-resource "terraform_remote_state" "vpc" {
+data "terraform_remote_state" "vpc" {
   backend = "s3"
   config {
     region = "${var.s3_region}"

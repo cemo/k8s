@@ -13,19 +13,19 @@ resource "aws_launch_configuration" "etcd" {
 
 resource "aws_security_group" "etcd" {
   name = "etcd-${var.environment}"
-  vpc_id = "${terraform_remote_state.vpc.output.id}"
+  vpc_id = "${data.terraform_remote_state.vpc.vpc_id}"
   ingress {
     from_port = 22
     to_port = 22
     protocol = "tcp"
-    security_groups = ["${terraform_remote_state.vpc.output.vpn_sg_id}"]
+    security_groups = ["${data.terraform_remote_state.vpc.vpn_sg_id}"]
   }
   ingress {
     from_port = 2379
     to_port = 2380
     protocol = "tcp"
     self = true
-    cidr_blocks = ["${terraform_remote_state.vpc.output.cidr_block}"]
+    cidr_blocks = ["${data.terraform_remote_state.vpc.cidr_block}"]
   }
   egress {
     from_port = 0
