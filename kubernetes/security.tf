@@ -18,14 +18,6 @@ resource "aws_security_group" "kubernetes" {
     ]
   }
   ingress {
-    from_port = 8080
-    to_port = 8080
-    protocol = "tcp"
-    security_groups = [
-      "${data.terraform_remote_state.vpc.vpn_sg_id}"
-    ]
-  }
-  ingress {
     from_port = 0
     to_port = 0
     protocol = "-1"
