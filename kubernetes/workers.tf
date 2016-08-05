@@ -33,7 +33,10 @@ resource "aws_launch_configuration" "worker" {
   instance_type = "${var.worker_instance_type}"
   iam_instance_profile = "${aws_iam_instance_profile.kubernetes.id}"
   key_name = "${var.environment}"
-  security_groups = ["${aws_security_group.kubernetes.id}"]
+  security_groups = [
+    "${aws_security_group.kubernetes.id}",
+    "${aws_security_group.kubernetes_worker.id}"
+  ]
   user_data = "${data.template_file.worker_cloud_config.rendered}"
   lifecycle {
     create_before_destroy = true
@@ -52,5 +55,18 @@ data "template_file" "worker_cloud_config" {
     DNS_SERVICE_IP = "${cidrhost(var.service_ip_range, 10)}"
     CA_PEM = "${base64encode(file("${path.module}/ssl/ca.pem"))}"
     CA_KEY_PEM = "${base64encode(file("${path.module}/ssl/ca-key.pem"))}"
+  }
+}
+
+resource "aws_security_group" "kubernetes_worker" {
+  name = "kubernetes-worker-${var.environment}"
+  vpc_id = "${data.terraform_remote_state.vpc.vpc_id}"
+  tags {
+    Name = "kubernetes-worker-${var.environment}"
+    Environment = "${var.environment}"
+    KubernetesCluster = "${data.terraform_remote_state.vpc.kubernetes_cluster}"
+  }
+  lifecycle {
+    create_before_destroy = true
   }
 }
