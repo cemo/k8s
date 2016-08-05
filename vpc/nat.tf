@@ -1,18 +1,17 @@
 resource "aws_eip" "nat" {
-  count = "${length(split(",", var.availability_zones))}"
+  count = "${var.private_subnet_count}"
   vpc = true
 }
 
 resource "aws_nat_gateway" "main" {
-  count = "${length(split(",", var.availability_zones))}"
-  depends_on = ["aws_internet_gateway.main"]
-  allocation_id = "${element(aws_eip.nat.*.id, count.index)}"
-  subnet_id = "${element(aws_subnet.public.*.id, count.index)}"
+  count = "${var.private_subnet_count}"
+  allocation_id = "${aws_eip.nat.*.id[count.index]}"
+  subnet_id = "${aws_subnet.public.*.id[count.index]}"
 }
 
 resource "aws_route" "nat" {
-  count = "${length(split(",", var.availability_zones))}"
-  route_table_id = "${element(aws_route_table.private.*.id, count.index)}"
+  count = "${var.private_subnet_count}"
+  route_table_id = "${aws_route_table.private.*.id[count.index]}"
   destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id = "${element(aws_nat_gateway.main.*.id, count.index)}"
+  nat_gateway_id = "${aws_nat_gateway.main.*.id[count.index]}"
 }

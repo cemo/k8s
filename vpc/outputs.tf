@@ -1,8 +1,12 @@
+output "aws_account_id" {
+  value = "${var.aws_account_id}"
+}
+
 output "region" {
   value = "${var.region}"
 }
 
-output "id" {
+output "vpc_id" {
   value = "${aws_vpc.main.id}"
 }
 
@@ -11,11 +15,19 @@ output "cidr_block" {
 }
 
 output "private_subnet_ids" {
-  value = "${join(",", aws_subnet.private.*.id)}"
+  value = ["${aws_subnet.private.*.id}"]
 }
 
 output "public_subnet_ids" {
-  value = "${join(",", aws_subnet.public.*.id)}"
+  value = ["${aws_subnet.public.*.id}"]
+}
+
+output "private_route_table_ids" {
+  value = ["${aws_route_table.private.*.id}"]
+}
+
+output "public_route_table_ids" {
+  value = ["${aws_route_table.public.*.id}"]
 }
 
 output "private_zone_id" {
@@ -26,14 +38,18 @@ output "public_zone_id" {
   value = "${aws_route53_zone.public.zone_id}"
 }
 
+output "kubernetes_cluster" {
+  value = "k8s-${var.environment}"
+}
+
 output "vpn_sg_id" {
-  value = "${aws_security_group.vpn.id}"
+  value = "${module.vpn.sg_id}"
 }
 
 output "vpn_dns_name" {
-  value = "${aws_route53_record.vpn.fqdn}"
+  value = "${module.vpn.dns_name}"
 }
 
-output "kubernetes_cluster" {
-  value = "${var.kubernetes_cluster}"
+output "nat_gateway_ips" {
+  value = ["${aws_nat_gateway.main.*.public_ip}"]
 }

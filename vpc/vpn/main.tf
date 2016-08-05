@@ -1,9 +1,11 @@
 resource "aws_eip" "vpn" {
+  count = "${var.on_off}"
   vpc = true
 }
 
 resource "aws_route53_record" "vpn" {
-  zone_id = "${aws_route53_zone.public.zone_id}"
+  count = "${var.on_off}"
+  zone_id = "${var.public_zone_id}"
   name = "vpn"
   type = "A"
   ttl = "60"
@@ -11,9 +13,10 @@ resource "aws_route53_record" "vpn" {
 }
 
 resource "aws_instance" "vpn" {
-  subnet_id = "${aws_subnet.public.0.id}"
-  ami = "${var.vpn_ami_id}"
-  instance_type = "${var.vpn_instance_type}"
+  count = "${var.on_off}"
+  subnet_id = "${var.public_subnet_ids[0]}"
+  ami = "${var.ami_id}"
+  instance_type = "${var.instance_type}"
   key_name = "${var.environment}"
   source_dest_check = false
   vpc_security_group_ids = [
@@ -27,7 +30,8 @@ resource "aws_instance" "vpn" {
 }
 
 resource "template_file" "vpn" {
-  template = "${file("vpn-userdata")}"
+  count = "${var.on_off}"
+  template = "${file("${path.module}/vpn-userdata")}"
   vars {
     public_hostname = "${aws_route53_record.vpn.fqdn}"
     reroute_dns = "1"
@@ -35,31 +39,32 @@ resource "template_file" "vpn" {
 }
 
 resource "aws_security_group" "vpn" {
+  count = "${var.on_off}"
   name = "vpn-${var.environment}"
-  vpc_id = "${aws_vpc.main.id}"
+  vpc_id = "${var.vpc_id}"
   ingress {
     from_port = 22
     to_port = 22
     protocol = "tcp"
-    cidr_blocks = ["${format("%s/32", var.home_ip)}"]
+    cidr_blocks = "${var.access_list}"
   }
   ingress {
     from_port = 443
     to_port = 443
     protocol = "tcp"
-    cidr_blocks = ["${format("%s/32", var.home_ip)}"]
+    cidr_blocks = "${var.access_list}"
   }
   ingress {
     from_port = 943
     to_port = 943
     protocol = "tcp"
-    cidr_blocks = ["${format("%s/32", var.home_ip)}"]
+    cidr_blocks = "${var.access_list}"
   }
   ingress {
     from_port = 1194
     to_port = 1194
     protocol = "tcp"
-    cidr_blocks = ["${format("%s/32", var.home_ip)}"]
+    cidr_blocks = "${var.access_list}"
   }
   egress {
     from_port = 0
@@ -74,6 +79,7 @@ resource "aws_security_group" "vpn" {
 }
 
 resource "aws_eip_association" "vpn" {
+  count = "${var.on_off}"
   instance_id = "${aws_instance.vpn.id}"
   allocation_id = "${aws_eip.vpn.id}"
 }

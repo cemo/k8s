@@ -5,6 +5,10 @@ variable "environment" {}
 variable "s3_region" {}
 variable "s3_bucket" {}
 
+variable "aws_account_id" {
+  default = "323333154476"
+}
+
 variable "public_domain" {
   default = "devscape.io"
 }
@@ -18,25 +22,22 @@ variable "domain_hosted_zone_id" {
 }
 
 variable "vpc_cidr_block" {
-  default = "10.100.0.0/16"
+  default = {
+    shared = "10.0.0.0/16"
+    dev    = "10.100.0.0/16"
+    test   = "10.150.0.0/16"
+    prod   = "10.200.0.0/16"
+  }
 }
 
-variable "availability_zones" {
-  default = "a,b,d"
+variable "public_subnet_count" {
+  default = 3
 }
 
-variable "vpn_ami_id" {
-  default = "ami-38a3292f"
+variable "private_subnet_count" {
+  default = 3
 }
 
-variable "vpn_instance_type" {
-  default = "t2.micro"
-}
-
-variable "home_ip" {
-  default = "80.229.27.83"
-}
-
-variable "kubernetes_cluster" {
-  default = "devscape"
+variable "vpn_on_off" {
+  default = 0
 }
