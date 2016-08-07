@@ -12,10 +12,5 @@ resource "aws_route53_record" "ns" {
   name = "${var.environment}.${var.public_domain}"
   type = "NS"
   ttl = "30"
-  records = [
-    "${aws_route53_zone.public.name_servers.0}",
-    "${aws_route53_zone.public.name_servers.1}",
-    "${aws_route53_zone.public.name_servers.2}",
-    "${aws_route53_zone.public.name_servers.3}"
-  ]
+  records = ["${aws_route53_zone.public.name_servers}"]
 }

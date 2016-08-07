@@ -30,8 +30,24 @@ variable "vpc_cidr_block" {
   }
 }
 
-variable "public_subnet_count" {}
+variable "availability_zones" {
+  default = {
+    us-east-1 = ["a", "b", "d"]
+  }
+}
 
-variable "private_subnet_count" {}
+variable "vpn_ami_id" {
+  default = {
+    us-east-1 = "ami-38a3292f"
+  }
+}
 
-variable "vpn_on_off" {}
+variable "vpn_instance_type" {
+  default = "t2.micro"
+}
+
+variable "vpn_access_list" {
+  default = [
+    "80.229.27.83/32"
+  ]
+}
