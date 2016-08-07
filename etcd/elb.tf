@@ -35,7 +35,7 @@ resource "aws_elb" "etcd" {
 }
 
 resource "aws_security_group" "etcd_elb" {
-  name = "etcd-elb-${var.environment}"
+  name_prefix = "etcd-elb-${var.environment}-"
   vpc_id = "${data.terraform_remote_state.vpc.vpc_id}"
   ingress {
     from_port = 80
@@ -62,5 +62,8 @@ resource "aws_security_group" "etcd_elb" {
   tags {
     Name = "etcd-elb-${var.environment}"
     Environment = "${var.environment}"
+  }
+  lifecycle {
+    create_before_destroy = true
   }
 }

@@ -5,14 +5,14 @@ resource "aws_launch_configuration" "etcd" {
   iam_instance_profile = "${aws_iam_instance_profile.etcd.id}"
   key_name = "${var.environment}"
   security_groups = ["${aws_security_group.etcd.id}"]
-  user_data = "${file("cloud-config.yml")}"
+  user_data = "${file("${path.module}/files/cloud-config.yml")}"
   lifecycle {
     create_before_destroy = true
   }
 }
 
 resource "aws_security_group" "etcd" {
-  name = "etcd-${var.environment}"
+  name_prefix = "etcd-${var.environment}-"
   vpc_id = "${data.terraform_remote_state.vpc.vpc_id}"
   ingress {
     from_port = 22
