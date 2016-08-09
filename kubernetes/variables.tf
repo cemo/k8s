@@ -30,7 +30,7 @@ variable "worker_instance_type" {
 }
 
 variable "desired_workers" {
-  default = 1
+  default = 2
 }
 
 variable "min_workers" {
@@ -38,5 +38,5 @@ variable "min_workers" {
 }
 
 variable "max_workers" {
-  default = 1
+  default = 2
 }

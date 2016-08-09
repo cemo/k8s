@@ -46,3 +46,27 @@ spec:
     targetPort: 9090
   selector:
     app: kubernetes-dashboard
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: kubernetes-dashboard-dns
+spec:
+  completions: 1
+  template:
+    metadata:
+      name: kubernetes-dashboard-dns
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: kubernetes-dashboard-dns
+        image: antonosmond/k8s-route53
+        env:
+        - name: SERVICE_NAME
+          value: kubernetes-dashboard
+        - name: SERVICE_NAMESPACE
+          value: kube-system
+        - name: HOSTED_ZONE_ID
+          value: Z3U2UE30VIUPSV
+        - name: DNS_NAME
+          value: k8s
