@@ -1,12 +1,12 @@
 variable "region" {
-  default = "us-east-1"
+  default = "eu-west-1"
 }
 variable "environment" {}
 variable "s3_region" {}
 variable "s3_bucket" {}
 
 variable "ami_id" {
-  default = "ami-edc744fa"
+  default = "ami-cbb5d5b8"
 }
 
 variable "instance_type" {

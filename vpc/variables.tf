@@ -1,5 +1,5 @@
 variable "region" {
-  default = "us-east-1"
+  default = "eu-west-1"
 }
 variable "environment" {}
 variable "s3_region" {}
@@ -10,15 +10,15 @@ variable "aws_account_id" {
 }
 
 variable "public_domain" {
-  default = "devscape.io"
+  default = "anto.cloud"
 }
 
 variable "private_domain" {
-  default = "devscape.private"
+  default = "anto.private"
 }
 
 variable "domain_hosted_zone_id" {
-  default = "Z6SB6MX6NJNME"
+  default = "ZD3WE5CFYUNY7"
 }
 
 variable "vpc_cidr_block" {
@@ -32,13 +32,13 @@ variable "vpc_cidr_block" {
 
 variable "availability_zones" {
   default = {
-    us-east-1 = ["a", "b", "d"]
+    eu-west-1 = ["a", "b", "c"]
   }
 }
 
 variable "vpn_ami_id" {
   default = {
-    us-east-1 = "ami-38a3292f"
+    eu-west-1 = "ami-3c95f74f"
   }
 }
 
