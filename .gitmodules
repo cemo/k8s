@@ -1,3 +1,0 @@
-[submodule "terraform-rc"]
-	path = terraform-rc
-	url = git@bitbucket.org:antonosmond/terraform-rc.git
