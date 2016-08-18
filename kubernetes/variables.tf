@@ -34,7 +34,7 @@ variable "desired_workers" {
 }
 
 variable "min_workers" {
-  default = 1
+  default = 2
 }
 
 variable "max_workers" {

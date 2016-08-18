@@ -24,7 +24,7 @@ metadata:
   namespace: kube-system
 spec:
   completions: 1
-  activeDeadlineSeconds: 120
+  activeDeadlineSeconds: 300
   template:
     metadata:
       name: grafana-dns
@@ -32,7 +32,7 @@ spec:
       restartPolicy: Never
       containers:
       - name: grafana-dns
-        image: antonosmond/k8s-route53:1
+        image: antonosmond/k8s-route53:latest
         env:
         - name: SERVICE_NAME
           value: monitoring-grafana

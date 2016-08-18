@@ -63,7 +63,7 @@ spec:
       restartPolicy: Never
       containers:
       - name: kubernetes-dashboard-dns
-        image: antonosmond/k8s-route53:1
+        image: antonosmond/k8s-route53:latest
         env:
         - name: SERVICE_NAME
           value: kubernetes-dashboard
