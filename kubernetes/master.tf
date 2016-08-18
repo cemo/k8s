@@ -17,6 +17,7 @@ resource "aws_instance" "master" {
 }
 
 data "template_file" "master_cloud_config" {
+  depends_on = ["null_resource.ssl"]
   template = "${file("${path.module}/templates/master-cloud-config.yaml")}"
   vars {
     K8S_VER = "v${var.k8s_version}_coreos.0"

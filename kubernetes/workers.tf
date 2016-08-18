@@ -44,6 +44,7 @@ resource "aws_launch_configuration" "worker" {
 }
 
 data "template_file" "worker_cloud_config" {
+  depends_on = ["null_resource.ssl"]
   template = "${file("${path.module}/templates/worker-cloud-config.yaml")}"
   vars {
     K8S_VER = "v${var.k8s_version}_coreos.0"
