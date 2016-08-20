@@ -1,3 +1,7 @@
+output "vpc_name" {
+  value = "${var.name}"
+}
+
 output "region" {
   value = "${var.region}"
 }
