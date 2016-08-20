@@ -70,4 +70,4 @@ spec:
         - name: SERVICE_NAMESPACE
           value: kube-system
         - name: FQDN
-          value: k8s.dev.anto.private
+          value: k8s.ao.dev-kat.local
