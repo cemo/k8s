@@ -1,8 +1,8 @@
 resource "aws_instance" "master" {
   depends_on = ["aws_iam_instance_profile.kubernetes", "aws_iam_role.kubernetes"]
-  ami = "${var.ami_id}"
+  ami = "${var.ami_id[var.region]}"
   instance_type = "${var.master_instance_type}"
-  key_name = "${var.environment}"
+  key_name = "${data.terraform_remote_state.vpc.vpc_name}-${var.environment}"
   subnet_id = "${data.terraform_remote_state.vpc.private_subnet_ids[0]}"
   iam_instance_profile = "${aws_iam_instance_profile.kubernetes.id}"
   user_data = "${data.template_file.master_cloud_config.rendered}"
@@ -10,14 +10,13 @@ resource "aws_instance" "master" {
     "${aws_security_group.master.id}"
   ]
   tags {
-    Name = "kubernetes-master-${var.environment}"
+    Name = "${data.terraform_remote_state.vpc.vpc_name}.kubernetes-master.${var.environment}"
     Environment = "${var.environment}"
     KubernetesCluster = "${data.terraform_remote_state.vpc.kubernetes_cluster}"
   }
 }
 
 data "template_file" "master_cloud_config" {
-  depends_on = ["null_resource.ssl"]
   template = "${file("${path.module}/templates/master-cloud-config.yaml")}"
   vars {
     K8S_VER = "v${var.k8s_version}_coreos.0"
@@ -41,10 +40,10 @@ resource "aws_route53_record" "master" {
 }
 
 resource "aws_security_group" "master" {
-  name_prefix = "kubernetes-master-${var.environment}-"
+  name_prefix = "${data.terraform_remote_state.vpc.vpc_name}.kubernetes-master.${var.environment}."
   vpc_id = "${data.terraform_remote_state.vpc.vpc_id}"
   tags {
-    Name = "kubernetes-master-${var.environment}"
+    Name = "${data.terraform_remote_state.vpc.vpc_name}.kubernetes-master.${var.environment}"
     Environment = "${var.environment}"
   }
   lifecycle {

@@ -1,5 +1,5 @@
 resource "aws_autoscaling_group" "workers" {
-  name = "kubernetes-workers-${var.environment}"
+  name = "${data.terraform_remote_state.vpc.vpc_name}.kubernetes-workers.${var.environment}"
   force_delete = true
   vpc_zone_identifier = ["${data.terraform_remote_state.vpc.private_subnet_ids}"]
   desired_capacity = "${var.desired_workers}"
@@ -10,7 +10,7 @@ resource "aws_autoscaling_group" "workers" {
   health_check_type = "EC2"
   tag {
     key = "Name"
-    value = "kubernetes-worker-${var.environment}"
+    value = "${data.terraform_remote_state.vpc.vpc_name}.kubernetes-worker.${var.environment}"
     propagate_at_launch = true
   }
   tag {
@@ -29,11 +29,11 @@ resource "aws_autoscaling_group" "workers" {
 }
 
 resource "aws_launch_configuration" "worker" {
-  name_prefix = "kubernetes-worker-${var.environment}-"
-  image_id = "${var.ami_id}"
+  name_prefix = "${data.terraform_remote_state.vpc.vpc_name}.kubernetes-worker.${var.environment}."
+  image_id = "${var.ami_id[var.region]}"
   instance_type = "${var.worker_instance_type}"
   iam_instance_profile = "${aws_iam_instance_profile.kubernetes.id}"
-  key_name = "${var.environment}"
+  key_name = "${data.terraform_remote_state.vpc.vpc_name}-${var.environment}"
   security_groups = [
     "${aws_security_group.worker.id}"
   ]
@@ -44,7 +44,6 @@ resource "aws_launch_configuration" "worker" {
 }
 
 data "template_file" "worker_cloud_config" {
-  depends_on = ["null_resource.ssl"]
   template = "${file("${path.module}/templates/worker-cloud-config.yaml")}"
   vars {
     K8S_VER = "v${var.k8s_version}_coreos.0"
@@ -60,10 +59,10 @@ data "template_file" "worker_cloud_config" {
 }
 
 resource "aws_security_group" "worker" {
-  name_prefix = "kubernetes-worker-${var.environment}-"
+  name_prefix = "${data.terraform_remote_state.vpc.vpc_name}.kubernetes-worker.${var.environment}."
   vpc_id = "${data.terraform_remote_state.vpc.vpc_id}"
   tags {
-    Name = "kubernetes-worker-${var.environment}"
+    Name = "${data.terraform_remote_state.vpc.vpc_name}.kubernetes-worker.${var.environment}"
     Environment = "${var.environment}"
     KubernetesCluster = "${data.terraform_remote_state.vpc.kubernetes_cluster}"
   }

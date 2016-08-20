@@ -11,6 +11,6 @@ DNS.1 = kubernetes
 DNS.2 = kubernetes.default
 DNS.3 = kubernetes.default.svc
 DNS.4 = kubernetes.default.svc.cluster.local
-DNS.5 = kubernetes-master.dev.anto.private
+DNS.5 = kubernetes-master.ao.dev-kat.local
 DNS.6 = localhost
 IP.1 = 10.3.0.1
