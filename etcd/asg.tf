@@ -1,5 +1,5 @@
 resource "aws_autoscaling_group" "etcd" {
-  name = "etcd-${var.environment}"
+  name = "${data.terraform_remote_state.vpc.vpc_name}.etcd.${var.environment}"
   force_delete = true
   min_size = "${var.cluster_size}"
   max_size = "${var.cluster_size}"
@@ -11,7 +11,7 @@ resource "aws_autoscaling_group" "etcd" {
   vpc_zone_identifier = ["${data.terraform_remote_state.vpc.private_subnet_ids}"]
   tag {
     key = "Name"
-    value = "etcd-${var.environment}"
+    value = "${data.terraform_remote_state.vpc.vpc_name}.etcd.${var.environment}"
     propagate_at_launch = true
   }
   tag {

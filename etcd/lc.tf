@@ -1,9 +1,9 @@
 resource "aws_launch_configuration" "etcd" {
-  name_prefix = "etcd-${var.environment}-"
-  image_id = "${var.ami_id}"
+  name_prefix = "${data.terraform_remote_state.vpc.vpc_name}.etcd.${var.environment}."
+  image_id = "${var.ami_id[var.region]}"
   instance_type = "${var.instance_type}"
   iam_instance_profile = "${aws_iam_instance_profile.etcd.id}"
-  key_name = "${var.environment}"
+  key_name = "${data.terraform_remote_state.vpc.vpc_name}-${var.environment}"
   security_groups = ["${aws_security_group.etcd.id}"]
   user_data = "${file("${path.module}/files/cloud-config.yml")}"
   lifecycle {
@@ -12,7 +12,7 @@ resource "aws_launch_configuration" "etcd" {
 }
 
 resource "aws_security_group" "etcd" {
-  name_prefix = "etcd-${var.environment}-"
+  name_prefix = "${data.terraform_remote_state.vpc.vpc_name}.etcd.${var.environment}."
   vpc_id = "${data.terraform_remote_state.vpc.vpc_id}"
   ingress {
     from_port = 22
@@ -34,7 +34,7 @@ resource "aws_security_group" "etcd" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   tags {
-    Name = "etcd-${var.environment}"
+    Name = "${data.terraform_remote_state.vpc.vpc_name}.etcd.${var.environment}"
     Environment = "${var.environment}"
   }
   lifecycle {

@@ -1,5 +1,5 @@
 resource "aws_elb" "etcd" {
-  name = "etcd-${var.environment}"
+  name = "${data.terraform_remote_state.vpc.vpc_name}-etcd-${var.environment}"
   internal = true
   subnets = ["${data.terraform_remote_state.vpc.private_subnet_ids}"]
   listener {
@@ -29,13 +29,13 @@ resource "aws_elb" "etcd" {
     "${aws_security_group.etcd_elb.id}"
   ]
   tags {
-    Name = "etcd-${var.environment}"
+    Name = "${data.terraform_remote_state.vpc.vpc_name}.etcd.${var.environment}"
     Environment = "${var.environment}"
   }
 }
 
 resource "aws_security_group" "etcd_elb" {
-  name_prefix = "etcd-elb-${var.environment}-"
+  name_prefix = "${data.terraform_remote_state.vpc.vpc_name}.etcd-elb.${var.environment}."
   vpc_id = "${data.terraform_remote_state.vpc.vpc_id}"
   ingress {
     from_port = 80
@@ -60,7 +60,7 @@ resource "aws_security_group" "etcd_elb" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   tags {
-    Name = "etcd-elb-${var.environment}"
+    Name = "${data.terraform_remote_state.vpc.vpc_name}.etcd-elb.${var.environment}"
     Environment = "${var.environment}"
   }
   lifecycle {
