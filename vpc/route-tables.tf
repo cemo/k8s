@@ -1,7 +1,7 @@
 resource "aws_route_table" "public" {
   vpc_id = "${aws_vpc.main.id}"
   tags {
-    Name = "public-${var.environment}"
+    Name = "${var.name}.public.${var.environment}"
     Environment = "${var.environment}"
   }
 }
@@ -22,7 +22,7 @@ resource "aws_route_table" "private" {
   count = "${length(var.availability_zones[var.region])}"
   vpc_id = "${aws_vpc.main.id}"
   tags {
-    Name = "private-${aws_subnet.private.*.availability_zone[count.index]}-${var.environment}"
+    Name = "${var.name}.private.${aws_subnet.private.*.availability_zone[count.index]}.${var.environment}"
     Environment = "${var.environment}"
   }
 }

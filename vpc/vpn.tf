@@ -14,14 +14,14 @@ resource "aws_instance" "vpn" {
   ami = "${var.vpn_ami_id[var.region]}"
   subnet_id = "${aws_subnet.public.*.id[0]}"
   instance_type = "${var.vpn_instance_type}"
-  key_name = "${var.environment}"
+  key_name = "${var.name}-${var.environment}"
   source_dest_check = false
   vpc_security_group_ids = [
     "${aws_security_group.vpn.id}"
   ]
   user_data = "${data.template_file.vpn.rendered}"
   tags {
-    Name = "vpn-${var.environment}"
+    Name = "${var.name}.vpn.${var.environment}"
     Environment = "${var.environment}"
   }
 }
@@ -35,7 +35,7 @@ data "template_file" "vpn" {
 }
 
 resource "aws_security_group" "vpn" {
-  name_prefix = "vpn-${var.environment}-"
+  name = "vpn.${var.name}.${var.environment}"
   vpc_id = "${aws_vpc.main.id}"
   ingress {
     from_port = 22
@@ -68,7 +68,7 @@ resource "aws_security_group" "vpn" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   tags {
-    Name = "vpn-${var.environment}"
+    Name = "${var.name}.vpn.${var.environment}"
     Environment = "${var.environment}"
   }
   lifecycle {

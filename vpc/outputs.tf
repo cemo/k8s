@@ -43,7 +43,7 @@ output "private_zone_id" {
 }
 
 output "kubernetes_cluster" {
-  value = "k8s-${var.environment}"
+  value = "${var.name}.${var.environment}"
 }
 
 output "vpn_public_ip" {

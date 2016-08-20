@@ -5,6 +5,10 @@ variable "environment" {}
 variable "s3_region" {}
 variable "s3_bucket" {}
 
+variable "name" {
+  default = "platform"
+}
+
 variable "aws_account_id" {
   default = "323333154476"
 }
@@ -23,10 +27,7 @@ variable "domain_hosted_zone_id" {
 
 variable "vpc_cidr_block" {
   default = {
-    shared = "10.0.0.0/16"
     dev    = "10.100.0.0/16"
-    test   = "10.150.0.0/16"
-    prod   = "10.200.0.0/16"
   }
 }
 
@@ -39,6 +40,7 @@ variable "availability_zones" {
 variable "vpn_ami_id" {
   default = {
     eu-west-1 = "ami-3c95f74f"
+    us-east-1 = "ami-5d4ec54a"
   }
 }
 
