@@ -1,39 +1,23 @@
-variable "region" {
-  default = "eu-west-1"
-}
+variable "region" {}
 variable "environment" {}
 variable "s3_region" {}
 variable "s3_bucket" {}
-
-variable "name" {
-  default = "platform"
-}
-
-variable "aws_account_id" {
-  default = "323333154476"
-}
-
-variable "public_domain" {
-  default = "anto.cloud"
-}
-
-variable "private_domain" {
-  default = "anto.private"
-}
-
-variable "domain_hosted_zone_id" {
-  default = "ZD3WE5CFYUNY7"
-}
+variable "name" {}
+variable "aws_account_id" {}
+variable "public_domain" {}
+variable "private_domain" {}
+variable "domain_hosted_zone_id" {}
 
 variable "vpc_cidr_block" {
   default = {
-    dev    = "10.100.0.0/16"
+    dev = "10.250.0.0/16"
   }
 }
 
 variable "availability_zones" {
   default = {
     eu-west-1 = ["a", "b", "c"]
+    us-east-1 = ["a", "b", "c"]
   }
 }
 
@@ -50,6 +34,7 @@ variable "vpn_instance_type" {
 
 variable "vpn_access_list" {
   default = [
-    "80.229.27.83/32"
+    "80.229.27.83/32",
+    "212.36.160.12/32"
   ]
 }

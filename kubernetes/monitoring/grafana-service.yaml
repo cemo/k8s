@@ -32,11 +32,11 @@ spec:
       restartPolicy: Never
       containers:
       - name: grafana-dns
-        image: antonosmond/k8s-route53:latest
+        image: antonosmond/k8s-route53:1
         env:
         - name: SERVICE_NAME
           value: monitoring-grafana
         - name: SERVICE_NAMESPACE
           value: kube-system
         - name: FQDN
-          value: grafana.ao.dev-kat.local
+          value: grafana.ao.dev.cdes.local

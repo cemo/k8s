@@ -16,7 +16,7 @@ resource "aws_subnet" "private" {
   availability_zone = "${var.region}${element(var.availability_zones[var.region], count.index)}"
   cidr_block = "${cidrsubnet(aws_vpc.main.cidr_block, 4, count.index)}"
   tags {
-    Name = "${var.name}.private.${var.region}${element(var.availability_zones[var.region], count.index)}.${var.environment}"
+    Name = "private.${var.region}${element(var.availability_zones[var.region], count.index)}.${var.name}.${var.environment}"
     Environment = "${var.environment}"
     KubernetesCluster = "${var.name}.${var.environment}"
   }
@@ -29,7 +29,7 @@ resource "aws_subnet" "public" {
   cidr_block = "${cidrsubnet(aws_vpc.main.cidr_block, 4, count.index + length(aws_subnet.private.*.id))}"
   map_public_ip_on_launch = true
   tags {
-    Name = "${var.name}.public.${var.region}${element(var.availability_zones[var.region], count.index)}.${var.environment}"
+    Name = "public.${var.region}${element(var.availability_zones[var.region], count.index)}.${var.name}.${var.environment}"
     Environment = "${var.environment}"
     KubernetesCluster = "${var.name}.${var.environment}"
   }

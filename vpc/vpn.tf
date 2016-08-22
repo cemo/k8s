@@ -21,7 +21,7 @@ resource "aws_instance" "vpn" {
   ]
   user_data = "${data.template_file.vpn.rendered}"
   tags {
-    Name = "${var.name}.vpn.${var.environment}"
+    Name = "vpn.${var.name}.${var.environment}"
     Environment = "${var.environment}"
   }
 }
@@ -68,7 +68,7 @@ resource "aws_security_group" "vpn" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   tags {
-    Name = "${var.name}.vpn.${var.environment}"
+    Name = "vpn.${var.name}.${var.environment}"
     Environment = "${var.environment}"
   }
   lifecycle {

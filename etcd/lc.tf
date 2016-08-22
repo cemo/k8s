@@ -1,5 +1,5 @@
 resource "aws_launch_configuration" "etcd" {
-  name_prefix = "${data.terraform_remote_state.vpc.vpc_name}.etcd.${var.environment}."
+  name_prefix = "etcd.${data.terraform_remote_state.vpc.vpc_name}.${var.environment}."
   image_id = "${var.ami_id[var.region]}"
   instance_type = "${var.instance_type}"
   iam_instance_profile = "${aws_iam_instance_profile.etcd.id}"
@@ -12,13 +12,16 @@ resource "aws_launch_configuration" "etcd" {
 }
 
 resource "aws_security_group" "etcd" {
-  name_prefix = "${data.terraform_remote_state.vpc.vpc_name}.etcd.${var.environment}."
+  name_prefix = "etcd.${data.terraform_remote_state.vpc.vpc_name}.${var.environment}."
   vpc_id = "${data.terraform_remote_state.vpc.vpc_id}"
   ingress {
     from_port = 22
     to_port = 22
     protocol = "tcp"
-    security_groups = ["${data.terraform_remote_state.vpc.vpn_sg_id}"]
+    security_groups = [
+      "${data.terraform_remote_state.vpc.vpn_sg_id}",
+      "${aws_security_group.etcd_elb.id}"
+    ]
   }
   ingress {
     from_port = 2379
@@ -34,7 +37,7 @@ resource "aws_security_group" "etcd" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   tags {
-    Name = "${data.terraform_remote_state.vpc.vpc_name}.etcd.${var.environment}"
+    Name = "etcd.${data.terraform_remote_state.vpc.vpc_name}.${var.environment}"
     Environment = "${var.environment}"
   }
   lifecycle {

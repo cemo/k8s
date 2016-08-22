@@ -1,5 +1,5 @@
 resource "aws_autoscaling_group" "workers" {
-  name = "${data.terraform_remote_state.vpc.vpc_name}.kubernetes-workers.${var.environment}"
+  name = "kubernetes-workers.${data.terraform_remote_state.vpc.vpc_name}.${var.environment}"
   force_delete = true
   vpc_zone_identifier = ["${data.terraform_remote_state.vpc.private_subnet_ids}"]
   desired_capacity = "${var.desired_workers}"
@@ -10,7 +10,7 @@ resource "aws_autoscaling_group" "workers" {
   health_check_type = "EC2"
   tag {
     key = "Name"
-    value = "${data.terraform_remote_state.vpc.vpc_name}.kubernetes-worker.${var.environment}"
+    value = "kubernetes-worker.${data.terraform_remote_state.vpc.vpc_name}.${var.environment}"
     propagate_at_launch = true
   }
   tag {
@@ -29,7 +29,7 @@ resource "aws_autoscaling_group" "workers" {
 }
 
 resource "aws_launch_configuration" "worker" {
-  name_prefix = "${data.terraform_remote_state.vpc.vpc_name}.kubernetes-worker.${var.environment}."
+  name_prefix = "kubernetes-worker.${data.terraform_remote_state.vpc.vpc_name}.${var.environment}."
   image_id = "${var.ami_id[var.region]}"
   instance_type = "${var.worker_instance_type}"
   iam_instance_profile = "${aws_iam_instance_profile.kubernetes.id}"
@@ -49,7 +49,6 @@ data "template_file" "worker_cloud_config" {
     K8S_VER = "v${var.k8s_version}_coreos.0"
     MASTER_HOST = "${aws_route53_record.master.fqdn}"
     ETCD_PROXY_INITIAL_CLUSTER = "http://${data.terraform_remote_state.etcd.dns_name}:2380"
-    ETCD_ENDPOINTS = "http://0.0.0.0:2379"
     POD_NETWORK = "${var.pod_network}"
     SERVICE_IP_RANGE = "${var.service_ip_range}"
     DNS_SERVICE_IP = "${cidrhost(var.service_ip_range, 10)}"
@@ -59,10 +58,10 @@ data "template_file" "worker_cloud_config" {
 }
 
 resource "aws_security_group" "worker" {
-  name_prefix = "${data.terraform_remote_state.vpc.vpc_name}.kubernetes-worker.${var.environment}."
+  name_prefix = "kubernetes-worker.${data.terraform_remote_state.vpc.vpc_name}.${var.environment}."
   vpc_id = "${data.terraform_remote_state.vpc.vpc_id}"
   tags {
-    Name = "${data.terraform_remote_state.vpc.vpc_name}.kubernetes-worker.${var.environment}"
+    Name = "kubernetes-worker.${data.terraform_remote_state.vpc.vpc_name}.${var.environment}"
     Environment = "${var.environment}"
     KubernetesCluster = "${data.terraform_remote_state.vpc.kubernetes_cluster}"
   }

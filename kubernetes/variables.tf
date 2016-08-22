@@ -1,6 +1,4 @@
-variable "region" {
-  default = "us-east-1"
-}
+variable "region" {}
 variable "environment" {}
 variable "s3_region" {}
 variable "s3_bucket" {}
@@ -13,7 +11,7 @@ variable "ami_id" {
 }
 
 variable "k8s_version" {
-  default = "1.3.2"
+  default = "1.3.5"
 }
 
 variable "pod_network" {
@@ -33,7 +31,7 @@ variable "worker_instance_type" {
 }
 
 variable "desired_workers" {
-  default = 3
+  default = 1
 }
 
 variable "min_workers" {
@@ -41,5 +39,5 @@ variable "min_workers" {
 }
 
 variable "max_workers" {
-  default = 5
+  default = 3
 }

@@ -1,5 +1,4 @@
 resource "aws_instance" "master" {
-  depends_on = ["aws_iam_instance_profile.kubernetes", "aws_iam_role.kubernetes"]
   ami = "${var.ami_id[var.region]}"
   instance_type = "${var.master_instance_type}"
   key_name = "${data.terraform_remote_state.vpc.vpc_name}-${var.environment}"
@@ -10,7 +9,7 @@ resource "aws_instance" "master" {
     "${aws_security_group.master.id}"
   ]
   tags {
-    Name = "${data.terraform_remote_state.vpc.vpc_name}.kubernetes-master.${var.environment}"
+    Name = "kubernetes-master.${data.terraform_remote_state.vpc.vpc_name}.${var.environment}"
     Environment = "${var.environment}"
     KubernetesCluster = "${data.terraform_remote_state.vpc.kubernetes_cluster}"
   }
@@ -21,7 +20,6 @@ data "template_file" "master_cloud_config" {
   vars {
     K8S_VER = "v${var.k8s_version}_coreos.0"
     ETCD_PROXY_INITIAL_CLUSTER = "http://${data.terraform_remote_state.etcd.dns_name}:2380"
-    ETCD_ENDPOINTS = "http://0.0.0.0:2379"
     POD_NETWORK = "${var.pod_network}"
     SERVICE_IP_RANGE = "${var.service_ip_range}"
     DNS_SERVICE_IP = "${cidrhost(var.service_ip_range, 10)}"
@@ -40,10 +38,10 @@ resource "aws_route53_record" "master" {
 }
 
 resource "aws_security_group" "master" {
-  name_prefix = "${data.terraform_remote_state.vpc.vpc_name}.kubernetes-master.${var.environment}."
+  name_prefix = "kubernetes-master.${data.terraform_remote_state.vpc.vpc_name}.${var.environment}."
   vpc_id = "${data.terraform_remote_state.vpc.vpc_id}"
   tags {
-    Name = "${data.terraform_remote_state.vpc.vpc_name}.kubernetes-master.${var.environment}"
+    Name = "kubernetes-master.${data.terraform_remote_state.vpc.vpc_name}.${var.environment}"
     Environment = "${var.environment}"
   }
   lifecycle {

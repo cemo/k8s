@@ -46,6 +46,14 @@ output "private_zone_id" {
   value = "${aws_route53_zone.private.zone_id}"
 }
 
+output "public_domain" {
+  value = "${var.name}.${var.environment}.${var.public_domain}"
+}
+
+output "private_domain" {
+  value = "${var.name}.${var.environment}.${var.private_domain}"
+}
+
 output "kubernetes_cluster" {
   value = "${var.name}.${var.environment}"
 }

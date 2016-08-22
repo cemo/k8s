@@ -1,7 +1,13 @@
 resource "aws_elb" "etcd" {
-  name = "${data.terraform_remote_state.vpc.vpc_name}-etcd-${var.environment}"
+  name = "etcd-${data.terraform_remote_state.vpc.vpc_name}-${var.environment}"
   internal = true
   subnets = ["${data.terraform_remote_state.vpc.private_subnet_ids}"]
+  listener {
+    lb_port = 22
+    lb_protocol = "tcp"
+    instance_port = 22
+    instance_protocol = "tcp"
+  }
   listener {
     lb_port = 80
     lb_protocol = "http"
@@ -29,14 +35,22 @@ resource "aws_elb" "etcd" {
     "${aws_security_group.etcd_elb.id}"
   ]
   tags {
-    Name = "${data.terraform_remote_state.vpc.vpc_name}.etcd.${var.environment}"
+    Name = "etcd.${data.terraform_remote_state.vpc.vpc_name}.${var.environment}"
     Environment = "${var.environment}"
   }
 }
 
 resource "aws_security_group" "etcd_elb" {
-  name_prefix = "${data.terraform_remote_state.vpc.vpc_name}.etcd-elb.${var.environment}."
+  name_prefix = "etcd-elb.${data.terraform_remote_state.vpc.vpc_name}.${var.environment}."
   vpc_id = "${data.terraform_remote_state.vpc.vpc_id}"
+  ingress {
+    from_port = 22
+    to_port = 22
+    protocol = "tcp"
+    security_groups = [
+      "${data.terraform_remote_state.vpc.vpn_sg_id}"
+    ]
+  }
   ingress {
     from_port = 80
     to_port = 80
@@ -60,7 +74,7 @@ resource "aws_security_group" "etcd_elb" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   tags {
-    Name = "${data.terraform_remote_state.vpc.vpc_name}.etcd-elb.${var.environment}"
+    Name = "etcd-elb.${data.terraform_remote_state.vpc.vpc_name}.${var.environment}"
     Environment = "${var.environment}"
   }
   lifecycle {

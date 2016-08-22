@@ -1,6 +1,4 @@
-variable "region" {
-  default = "us-east-1"
-}
+variable "region" {}
 variable "environment" {}
 variable "s3_region" {}
 variable "s3_bucket" {}
