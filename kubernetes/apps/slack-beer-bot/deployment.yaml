@@ -12,6 +12,7 @@ spec:
       containers:
       - name: slack-beer-bot
         image: antonosmond/slack-beer-bot:1
+        imagePullPolicy: Always
         env:
         - name: SLACK_API_TOKEN
           valueFrom:
