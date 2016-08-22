@@ -1,5 +1,5 @@
 resource "aws_instance" "master" {
-  ami = "${var.ami_id[var.region]}"
+  ami = "${var.ami_id[data.terraform_remote_state.vpc.region]}"
   instance_type = "${var.master_instance_type}"
   key_name = "${data.terraform_remote_state.vpc.vpc_name}-${var.environment}"
   subnet_id = "${data.terraform_remote_state.vpc.private_subnet_ids[0]}"

@@ -1,6 +1,6 @@
 resource "aws_launch_configuration" "etcd" {
   name_prefix = "etcd.${data.terraform_remote_state.vpc.vpc_name}.${var.environment}."
-  image_id = "${var.ami_id[var.region]}"
+  image_id = "${var.ami_id[data.terraform_remote_state.vpc.region]}"
   instance_type = "${var.instance_type}"
   iam_instance_profile = "${aws_iam_instance_profile.etcd.id}"
   key_name = "${data.terraform_remote_state.vpc.vpc_name}-${var.environment}"

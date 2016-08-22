@@ -30,7 +30,7 @@ resource "aws_autoscaling_group" "workers" {
 
 resource "aws_launch_configuration" "worker" {
   name_prefix = "kubernetes-worker.${data.terraform_remote_state.vpc.vpc_name}.${var.environment}."
-  image_id = "${var.ami_id[var.region]}"
+  image_id = "${var.ami_id[data.terraform_remote_state.vpc.region]}"
   instance_type = "${var.worker_instance_type}"
   iam_instance_profile = "${aws_iam_instance_profile.kubernetes.id}"
   key_name = "${data.terraform_remote_state.vpc.vpc_name}-${var.environment}"
