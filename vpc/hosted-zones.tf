@@ -1,15 +1,15 @@
 resource "aws_route53_zone" "private" {
-  name = "${var.name}.${var.environment}.${var.private_domain}"
+  name = "${var.environment}.${var.name}.${var.private_domain}"
   vpc_id = "${aws_vpc.main.id}"
 }
 
 resource "aws_route53_zone" "public" {
-  name = "${var.name}.${var.environment}.${var.public_domain}"
+  name = "${var.environment}.${var.name}.${var.public_domain}"
 }
 
 resource "aws_route53_record" "ns" {
   zone_id = "${var.domain_hosted_zone_id}"
-  name = "${var.name}.${var.environment}.${var.public_domain}"
+  name = "${var.environment}.${var.name}.${var.public_domain}"
   type = "NS"
   ttl = "30"
   records = ["${aws_route53_zone.public.name_servers}"]

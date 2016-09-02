@@ -38,6 +38,10 @@ resource "aws_launch_configuration" "worker" {
     "${aws_security_group.worker.id}"
   ]
   user_data = "${data.template_file.worker_cloud_config.rendered}"
+  root_block_device {
+    volume_type = "gp2"
+    volume_size = "50"
+  }
   lifecycle {
     create_before_destroy = true
   }
