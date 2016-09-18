@@ -1,6 +1,16 @@
 #cloud-config
 
 write_files:
+- path: /opt/bin/wupiao
+  permissions: '0755'
+  content: |
+    #!/bin/bash
+    # [w]ait [u]ntil [p]ort [i]s [a]ctually [o]pen
+    [ -n "$1" ] && \
+      until curl -o /dev/null -sIf http://$${1}; do \
+        sleep 1 && echo .;
+      done;
+    exit $?
 - path: /etc/kubernetes/ssl/ca.pem
   content: ${CA_PEM}
   encoding: base64
@@ -157,32 +167,7 @@ write_files:
             port: 10251
           initialDelaySeconds: 15
           timeoutSeconds: 1
-- path: /etc/kubernetes/manifests/kube-addon-manager.yaml
-  content: |
-    apiVersion: v1
-    kind: Pod
-    metadata:
-      name: kube-addon-manager
-      namespace: kube-system
-      version: v1
-    spec:
-      hostNetwork: true
-      containers:
-      - name: kube-addon-manager
-        image: gcr.io/google-containers/kube-addon-manager:v1
-        resources:
-          requests:
-            cpu: 5m
-            memory: 100Mi
-        volumeMounts:
-        - mountPath: /etc/kubernetes/
-          name: addons
-          readOnly: true
-      volumes:
-      - hostPath:
-          path: /etc/kubernetes/
-        name: addons
-- path: /etc/kubernetes/addons/skydns-rc.yaml
+- path: /etc/kubernetes/skydns-rc.yaml
   content: |
     apiVersion: v1
     kind: ReplicationController
@@ -275,7 +260,7 @@ write_files:
             - containerPort: 8080
               protocol: TCP
           dnsPolicy: Default  # Don't use cluster DNS.
-- path: /etc/kubernetes/addons/skydns-svc.yaml
+- path: /etc/kubernetes/skydns-svc.yaml
   content: |
     apiVersion: v1
     kind: Service
@@ -345,3 +330,12 @@ coreos:
       RestartSec=10
       [Install]
       WantedBy=multi-user.target
+  - name: kube-dns.service
+    command: start
+    content: |
+      [Service]
+      ExecStartPre=/opt/bin/wupiao 127.0.0.1:8080
+      ExecStart=/usr/bin/curl -H "Content-Type: application/yaml" -XPOST --data-binary @/etc/kubernetes/skydns-rc.yaml "http://127.0.0.1:8080/api/v1/namespaces/kube-system/replicationcontrollers"
+      ExecStart=/usr/bin/curl -H "Content-Type: application/yaml" -XPOST --data-binary @/etc/kubernetes/skydns-svc.yaml "http://127.0.0.1:8080/api/v1/namespaces/kube-system/services"
+      RemainAfterExit=yes
+      Type=oneshot
