@@ -1,0 +1,6 @@
+{
+  "remote_state_region": "eu-west-1",
+  "remote_state_bucket": "anto-state",
+  "remote_state_kms_key_id": "arn:aws:kms:eu-west-1:323333154476:key/6c6f5d41-36db-4892-869e-0d1bb2e7da91",
+  "name": "k8s"
+}

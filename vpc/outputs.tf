@@ -1,9 +1,9 @@
-output "vpc_name" {
-  value = "${var.name}"
+output "account_id" {
+  value = "${var.account_id[var.environment]}"
 }
 
 output "region" {
-  value = "${var.region}"
+  value = "${var.region[var.environment]}"
 }
 
 output "vpc_id" {
@@ -15,19 +15,11 @@ output "cidr_block" {
 }
 
 output "availability_zones" {
-  value = ["${var.availability_zones[var.region]}"]
-}
-
-output "public_subnet_ids" {
-  value = ["${aws_subnet.public.*.id}"]
+  value = ["${aws_subnet.private.*.availability_zone}"]
 }
 
 output "private_subnet_ids" {
   value = ["${aws_subnet.private.*.id}"]
-}
-
-output "public_route_table_ids" {
-  value = ["${aws_route_table.public.*.id}"]
 }
 
 output "private_route_table_ids" {
@@ -38,38 +30,34 @@ output "nat_gateway_ips" {
   value = ["${aws_nat_gateway.main.*.public_ip}"]
 }
 
-output "public_zone_id" {
-  value = "${aws_route53_zone.public.zone_id}"
-}
-
-output "private_zone_id" {
+output "private_hosted_zone_id" {
   value = "${aws_route53_zone.private.zone_id}"
 }
 
-output "public_domain" {
-  value = "${var.name}.${var.environment}.${var.public_domain}"
+output "private_domain_name" {
+  value = "${var.environment}.${var.name}.internal.${var.domain}"
 }
 
-output "private_domain" {
-  value = "${var.name}.${var.environment}.${var.private_domain}"
+output "public_subnet_ids" {
+  value = ["${aws_subnet.public.*.id}"]
+}
+
+output "public_route_table_ids" {
+  value = ["${aws_route_table.public.*.id}"]
+}
+
+output "public_hosted_zone_id" {
+  value = "${aws_route53_zone.public.zone_id}"
+}
+
+output "public_domain_name" {
+  value = "${var.environment}.${var.name}.${var.domain}"
 }
 
 output "kubernetes_cluster" {
-  value = "${var.name}.${var.environment}"
+  value = "${var.environment}.${var.name}"
 }
 
-output "vpn_public_ip" {
-  value = "${aws_eip.vpn.public_ip}"
-}
-
-output "vpn_private_ip" {
-  value = "${aws_instance.vpn.private_ip}"
-}
-
-output "vpn_sg_id" {
-  value = "${aws_security_group.vpn.id}"
-}
-
-output "vpn_dns_name" {
-  value = "${aws_route53_record.vpn.fqdn}"
+output "s3_endpoint_id" {
+  value = "${aws_vpc_endpoint.s3.id}"
 }
