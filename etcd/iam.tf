@@ -1,10 +1,11 @@
 resource "aws_iam_instance_profile" "etcd" {
-  name = "etcd.${data.terraform_remote_state.vpc.vpc_name}.${var.environment}"
+  name  = "etcd.${var.environment}.${var.name}"
   roles = ["${aws_iam_role.etcd.name}"]
 }
 
 resource "aws_iam_role" "etcd" {
-  name = "etcd.${data.terraform_remote_state.vpc.vpc_name}.${var.environment}"
+  name = "etcd.${var.environment}.${var.name}"
+
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -22,8 +23,9 @@ EOF
 }
 
 resource "aws_iam_role_policy" "etcd" {
-  name = "etcd.${data.terraform_remote_state.vpc.vpc_name}.${var.environment}"
+  name = "etcd.${var.environment}.${var.name}"
   role = "${aws_iam_role.etcd.id}"
+
   policy = <<EOF
 {
   "Version": "2012-10-17",

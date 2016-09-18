@@ -1,10 +1,10 @@
 module "vpn" {
-  source              = "../vpn"
-  name                = "${var.name}"
-  environment         = "${var.environment}"
-  region = "${var.region[var.environment]}"
-  vpc_id = "${aws_vpc.main.id}"
-  subnet_id = "${aws_subnet.public.0.id}"
+  source         = "../vpn"
+  name           = "${var.name}"
+  environment    = "${var.environment}"
+  region         = "${var.region[var.environment]}"
+  vpc_id         = "${aws_vpc.main.id}"
+  subnet_id      = "${aws_subnet.public.0.id}"
   hosted_zone_id = "${aws_route53_zone.public.id}"
 }
 

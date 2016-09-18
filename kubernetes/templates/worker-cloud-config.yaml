@@ -42,10 +42,10 @@ write_files:
   content: ${CA_PEM}
   encoding: base64
 - path: /etc/kubernetes/ssl/ca-key.pem
+  content: ${CA_KEY}
+  encoding: base64
   permissions: '0600'
   owner: root
-  content: ${CA_KEY_PEM}
-  encoding: base64
 - path: /etc/flannel/options.env
   content: |
     FLANNELD_IFACE=$private_ipv4
@@ -115,7 +115,7 @@ coreos:
     initial-cluster: "default=${ETCD_PROXY_INITIAL_CLUSTER}"
     proxy: on
   update:
-    reboot-strategy: "off"
+    reboot-strategy: off
   units:
   - name: etcd2.service
     command: start

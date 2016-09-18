@@ -1,16 +1,25 @@
-variable "environment" {}
-variable "s3_region" {}
-variable "s3_bucket" {}
+variable "remote_state_region" {}
 
-variable "ami_id" {
+variable "remote_state_bucket" {}
+
+variable "name" {}
+
+variable "environment" {}
+
+variable "region" {
   default = {
-    eu-west-1 = "ami-b7cba3c4"
-    us-east-1 = "ami-6d138f7a"
+    dev = "eu-west-1"
+  }
+}
+
+variable "coreos_ami_id" {
+  default = {
+    eu-west-1 = "ami-e3d6ab90"
   }
 }
 
 variable "k8s_version" {
-  default = "1.3.5"
+  default = "1.3.7"
 }
 
 variable "pod_network" {
@@ -22,21 +31,41 @@ variable "service_ip_range" {
 }
 
 variable "master_instance_type" {
-  default = "m3.medium"
+  default = {
+    dev = "m3.medium"
+  }
 }
 
 variable "worker_instance_type" {
-  default = "t2.small"
+  default = {
+    dev = "t2.small"
+  }
+}
+
+variable "key_name" {
+  default = {
+    dev = "k8s-dev"
+  }
 }
 
 variable "desired_workers" {
-  default = 1
+  default = {
+    dev = 1
+  }
 }
 
 variable "min_workers" {
-  default = 1
+  default = {
+    dev = 1
+  }
 }
 
 variable "max_workers" {
-  default = 3
+  default = {
+    dev = 3
+  }
+}
+
+variable "kubectl_config" {
+  default = 1
 }

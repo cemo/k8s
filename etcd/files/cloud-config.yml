@@ -1,5 +1,4 @@
 #cloud-config
-
 coreos:
   etcd2:
     advertise-client-urls: "http://$private_ipv4:2379"
@@ -21,7 +20,7 @@ coreos:
         ExecStart=/usr/bin/systemctl start etcd2
     - name: fleet.service
       command: start
-      
+
 write_files:
   - path: /etc/systemd/system/etcd2.service.d/30-etcd_peers.conf
     permissions: 0644

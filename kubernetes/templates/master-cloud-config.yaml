@@ -4,24 +4,14 @@ write_files:
 - path: /etc/kubernetes/ssl/ca.pem
   content: ${CA_PEM}
   encoding: base64
+- path: /etc/kubernetes/ssl/apiserver-key.pem
+  content: ${APISERVER_KEY}
+  encoding: base64
+  permissions: '0600'
+  owner: root
 - path: /etc/kubernetes/ssl/apiserver.pem
   content: ${APISERVER_PEM}
   encoding: base64
-- path: /etc/kubernetes/ssl/apiserver-key.pem
-  permissions: '0600'
-  owner: root
-  content: ${APISERVER_KEY_PEM}
-  encoding: base64
-- path: /opt/bin/wupiao
-  permissions: '0755'
-  content: |
-    #!/bin/bash
-    # [w]ait [u]ntil [p]ort [i]s [a]ctually [o]pen
-    [ -n "$1" ] && \
-      until curl -o /dev/null -sIf http://$${1}; do \
-        sleep 1 && echo .;
-      done;
-    exit $?
 - path: /etc/flannel/options.env
   content: |
     FLANNELD_IFACE=$private_ipv4
@@ -167,7 +157,32 @@ write_files:
             port: 10251
           initialDelaySeconds: 15
           timeoutSeconds: 1
-- path: /etc/kubernetes/kube-dns-rc.yaml
+- path: /etc/kubernetes/manifests/kube-addon-manager.yaml
+  content: |
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      name: kube-addon-manager
+      namespace: kube-system
+      version: v1
+    spec:
+      hostNetwork: true
+      containers:
+      - name: kube-addon-manager
+        image: gcr.io/google-containers/kube-addon-manager:v1
+        resources:
+          requests:
+            cpu: 5m
+            memory: 100Mi
+        volumeMounts:
+        - mountPath: /etc/kubernetes/
+          name: addons
+          readOnly: true
+      volumes:
+      - hostPath:
+          path: /etc/kubernetes/
+        name: addons
+- path: /etc/kubernetes/addons/skydns-rc.yaml
   content: |
     apiVersion: v1
     kind: ReplicationController
@@ -189,10 +204,13 @@ write_files:
             k8s-app: kube-dns
             version: v19
             kubernetes.io/cluster-service: "true"
+          annotations:
+            scheduler.alpha.kubernetes.io/critical-pod: ''
+            scheduler.alpha.kubernetes.io/tolerations: '[{"key":"CriticalAddonsOnly", "operator":"Exists"}]'
         spec:
           containers:
           - name: kubedns
-            image: gcr.io/google_containers/kubedns-amd64:1.6
+            image: gcr.io/google_containers/kubedns-amd64:1.7
             resources:
               limits:
                 cpu: 100m
@@ -232,6 +250,7 @@ write_files:
             - --cache-size=1000
             - --no-resolv
             - --server=127.0.0.1#10053
+            - --log-facility=-
             ports:
             - containerPort: 53
               name: dns
@@ -255,8 +274,8 @@ write_files:
             ports:
             - containerPort: 8080
               protocol: TCP
-          dnsPolicy: Default
-- path: /etc/kubernetes/kube-dns-svc.yaml
+          dnsPolicy: Default  # Don't use cluster DNS.
+- path: /etc/kubernetes/addons/skydns-svc.yaml
   content: |
     apiVersion: v1
     kind: Service
@@ -285,7 +304,7 @@ coreos:
     initial-cluster: "default=${ETCD_PROXY_INITIAL_CLUSTER}"
     proxy: on
   update:
-    reboot-strategy: "off"
+    reboot-strategy: off
   units:
   - name: etcd2.service
     command: start
@@ -326,12 +345,3 @@ coreos:
       RestartSec=10
       [Install]
       WantedBy=multi-user.target
-  - name: kube-dns.service
-    command: start
-    content: |
-      [Service]
-      ExecStartPre=/opt/bin/wupiao 127.0.0.1:8080
-      ExecStart=/usr/bin/curl -H "Content-Type: application/yaml" -XPOST --data-binary @/etc/kubernetes/kube-dns-svc.yaml "http://127.0.0.1:8080/api/v1/namespaces/kube-system/services"
-      ExecStart=/usr/bin/curl -H "Content-Type: application/yaml" -XPOST --data-binary @/etc/kubernetes/kube-dns-rc.yaml "http://127.0.0.1:8080/api/v1/namespaces/kube-system/replicationcontrollers"
-      RemainAfterExit=yes
-      Type=oneshot
