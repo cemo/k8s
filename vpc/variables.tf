@@ -29,7 +29,7 @@ variable "max_az_count" {
 }
 
 variable "domain" {
-  default = "anto.cloud"
+  default = "dev-kat.co.uk"
 }
 
 variable "domain_env_prefix" {
@@ -40,6 +40,6 @@ variable "domain_env_prefix" {
 
 variable "domain_hosted_zone_id" {
   default = {
-    dev = "ZD3WE5CFYUNY7"
+    dev = "Z25XM7MZD1U2CS"
   }
 }

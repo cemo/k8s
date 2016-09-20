@@ -39,4 +39,4 @@ spec:
         - name: SERVICE_NAMESPACE
           value: kube-system
         - name: FQDN
-          value: kubernetes-dashboard.dev.k8s.internal.anto.cloud
+          value: kubernetes-dashboard.dev.k8s.internal.dev-kat.co.uk
